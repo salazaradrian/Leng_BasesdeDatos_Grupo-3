@@ -1,21 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package repositorio;
+
 import conexion.ConexionOracle;
 import modelo.Cliente;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Adrian Salazar R
- */
 public class ClienteRepositorio {
 
- // Crear cliente
+    // Crear cliente
     public boolean agregarCliente(Cliente cliente) {
         String sql = "INSERT INTO clientes "
                    + "(nombre, primer_apellido, segundo_apellido, telefono, email, direccion) "
@@ -53,7 +46,7 @@ public class ClienteRepositorio {
                 c.setIdCliente(rs.getInt("id_cliente"));
                 c.setNombre(rs.getString("nombre"));
                 c.setPrimerApellido(rs.getString("primer_apellido"));
-                c.setSegundoApellido(rs.getString("segundo_apellido"));
+                c.setSegundoApellido(rs.getString("second_apellido"));
                 c.setTelefono(rs.getString("telefono"));
                 c.setEmail(rs.getString("email"));
                 c.setDireccion(rs.getString("direccion"));
@@ -105,13 +98,4 @@ public class ClienteRepositorio {
             return false;
         }
     }
-
-    public boolean agregarCliente(JFrame.Cliente cliente) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public boolean actualizarCliente(JFrame.Cliente c) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }
-   

@@ -1,15 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo;
 
-/**
- *
- * @author Adrian Salazar R
- */
 public class Cliente {
-    
+
     private int idCliente;
     private String nombre;
     private String primerApellido;
@@ -19,9 +11,21 @@ public class Cliente {
     private String direccion;
 
     // Constructor vacío
-    public Cliente() {}
+    public Cliente() {
+    }
 
-    // Constructor completo
+    // Constructor sin ID (para insertar)
+    public Cliente(String nombre, String primerApellido, String segundoApellido,
+                   String telefono, String email, String direccion) {
+        this.nombre = nombre;
+        this.primerApellido = primerApellido;
+        this.segundoApellido = segundoApellido;
+        this.telefono = telefono;
+        this.email = email;
+        this.direccion = direccion;
+    }
+
+    // Constructor con ID (para actualizar)
     public Cliente(int idCliente, String nombre, String primerApellido, String segundoApellido,
                    String telefono, String email, String direccion) {
         this.idCliente = idCliente;
@@ -32,8 +36,6 @@ public class Cliente {
         this.email = email;
         this.direccion = direccion;
     }
-
-    // Getters y Setters
 
     public int getIdCliente() {
         return idCliente;
@@ -90,6 +92,6 @@ public class Cliente {
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
+
+    
 }
-
-
