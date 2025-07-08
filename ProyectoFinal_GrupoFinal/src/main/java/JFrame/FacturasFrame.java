@@ -5,6 +5,12 @@ public class FacturasFrame extends JFrame {
     private JTextField txtIdFactura, txtIdVentas, txtFecha, txtImpuesto, txtSubtotal, txtIdEstado;
     private JButton btnAgregar, btnEditar, btnEliminar;
 
+    public static void main(String[] args) {
+    javax.swing.SwingUtilities.invokeLater(() -> {
+        new FacturasFrame().setVisible(true);
+    });
+}
+
     public FacturasFrame() {
         setTitle("Gestión de Facturas");
         setSize(450, 350);

@@ -5,6 +5,12 @@ public class IngredientesFrame extends JFrame {
     private JTextField txtIdIngrediente, txtNombre, txtCantidad, txtIdReceta;
     private JButton btnAgregar, btnEditar, btnEliminar;
 
+    public static void main(String[] args) {
+    javax.swing.SwingUtilities.invokeLater(() -> {
+        new IngredientesFrame().setVisible(true);
+    });
+}
+
     public IngredientesFrame() {
         setTitle("Gestión de Ingredientes");
         setSize(400, 300);
