@@ -15,15 +15,20 @@ import java.util.List;
  */
 public class ClienteRepositorio {
 
-// Crear cliente
+ // Crear cliente
     public boolean agregarCliente(Cliente cliente) {
-        String sql = "INSERT INTO clientes (nombre, telefono, direccion) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO clientes "
+                   + "(nombre, primer_apellido, segundo_apellido, telefono, email, direccion) "
+                   + "VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = ConexionOracle.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, cliente.getNombre());
-            ps.setString(2, cliente.getTelefono());
-            ps.setString(3, cliente.getDireccion());
+            ps.setString(2, cliente.getPrimerApellido());
+            ps.setString(3, cliente.getSegundoApellido());
+            ps.setString(4, cliente.getTelefono());
+            ps.setString(5, cliente.getEmail());
+            ps.setString(6, cliente.getDireccion());
 
             return ps.executeUpdate() > 0;
 
@@ -36,7 +41,8 @@ public class ClienteRepositorio {
     // Leer todos los clientes
     public List<Cliente> listarClientes() {
         List<Cliente> lista = new ArrayList<>();
-        String sql = "SELECT * FROM clientes";
+        String sql = "SELECT id_cliente, nombre, primer_apellido, segundo_apellido, telefono, email, direccion "
+                   + "FROM clientes";
 
         try (Connection conn = ConexionOracle.conectar();
              Statement st = conn.createStatement();
@@ -46,7 +52,10 @@ public class ClienteRepositorio {
                 Cliente c = new Cliente();
                 c.setIdCliente(rs.getInt("id_cliente"));
                 c.setNombre(rs.getString("nombre"));
+                c.setPrimerApellido(rs.getString("primer_apellido"));
+                c.setSegundoApellido(rs.getString("segundo_apellido"));
                 c.setTelefono(rs.getString("telefono"));
+                c.setEmail(rs.getString("email"));
                 c.setDireccion(rs.getString("direccion"));
                 lista.add(c);
             }
@@ -60,14 +69,19 @@ public class ClienteRepositorio {
 
     // Actualizar cliente
     public boolean actualizarCliente(Cliente cliente) {
-        String sql = "UPDATE clientes SET nombre = ?, telefono = ?, direccion = ? WHERE id_cliente = ?";
+        String sql = "UPDATE clientes SET nombre = ?, primer_apellido = ?, segundo_apellido = ?, "
+                   + "telefono = ?, email = ?, direccion = ? "
+                   + "WHERE id_cliente = ?";
         try (Connection conn = ConexionOracle.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, cliente.getNombre());
-            ps.setString(2, cliente.getTelefono());
-            ps.setString(3, cliente.getDireccion());
-            ps.setInt(4, cliente.getIdCliente());
+            ps.setString(2, cliente.getPrimerApellido());
+            ps.setString(3, cliente.getSegundoApellido());
+            ps.setString(4, cliente.getTelefono());
+            ps.setString(5, cliente.getEmail());
+            ps.setString(6, cliente.getDireccion());
+            ps.setInt(7, cliente.getIdCliente());
 
             return ps.executeUpdate() > 0;
 
@@ -90,6 +104,14 @@ public class ClienteRepositorio {
             System.out.println("Error al eliminar cliente: " + e.getMessage());
             return false;
         }
+    }
+
+    public boolean agregarCliente(JFrame.Cliente cliente) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public boolean actualizarCliente(JFrame.Cliente c) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
    
