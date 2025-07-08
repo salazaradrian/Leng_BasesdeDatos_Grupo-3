@@ -10,10 +10,9 @@
 public class Main {
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(() -> {
-            new JFrame.ClienteFrame().setVisible(true);
-
-
+            new MenuPrincipal().setVisible(true);
         });
     }
 }
+
 

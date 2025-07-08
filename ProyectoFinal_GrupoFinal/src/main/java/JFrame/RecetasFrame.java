@@ -6,11 +6,7 @@ public class RecetasFrame extends JFrame {
     private JTextField txtIdReceta, txtNombre, txtIdIngrediente;
     private JButton btnAgregar, btnEditar, btnEliminar;
  
-    public static void main(String[] args) {
-    javax.swing.SwingUtilities.invokeLater(() -> {
-        new RecetasFrame().setVisible(true);
-    });
-}
+   
     public RecetasFrame() {
         setTitle("Gestión de Recetas");
         setSize(400, 250);
