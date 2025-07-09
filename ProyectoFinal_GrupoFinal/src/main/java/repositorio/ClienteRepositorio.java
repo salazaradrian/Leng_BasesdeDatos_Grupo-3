@@ -46,7 +46,7 @@ public class ClienteRepositorio {
                 c.setIdCliente(rs.getInt("id_cliente"));
                 c.setNombre(rs.getString("nombre"));
                 c.setPrimerApellido(rs.getString("primer_apellido"));
-                c.setSegundoApellido(rs.getString("second_apellido"));
+                c.setSegundoApellido(rs.getString("segundo_apellido"));
                 c.setTelefono(rs.getString("telefono"));
                 c.setEmail(rs.getString("email"));
                 c.setDireccion(rs.getString("direccion"));
@@ -60,29 +60,30 @@ public class ClienteRepositorio {
         return lista;
     }
 
-    // Actualizar cliente
-    public boolean actualizarCliente(Cliente cliente) {
-        String sql = "UPDATE clientes SET nombre = ?, primer_apellido = ?, segundo_apellido = ?, "
-                   + "telefono = ?, email = ?, direccion = ? "
-                   + "WHERE id_cliente = ?";
-        try (Connection conn = ConexionOracle.conectar();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    //Actualizar clientes
+  public boolean actualizarCliente(Cliente cliente) {
+    String sql = "UPDATE clientes SET nombre = ?, primer_apellido = ?, segundo_apellido = ?, "
+               + "telefono = ?, email = ?, direccion = ? "
+               + "WHERE id_cliente = ?";
 
-            ps.setString(1, cliente.getNombre());
-            ps.setString(2, cliente.getPrimerApellido());
-            ps.setString(3, cliente.getSegundoApellido());
-            ps.setString(4, cliente.getTelefono());
-            ps.setString(5, cliente.getEmail());
-            ps.setString(6, cliente.getDireccion());
-            ps.setInt(7, cliente.getIdCliente());
+    try (Connection conn = ConexionOracle.conectar();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            return ps.executeUpdate() > 0;
+        ps.setString(1, cliente.getNombre());
+        ps.setString(2, cliente.getPrimerApellido());
+        ps.setString(3, cliente.getSegundoApellido());
+        ps.setString(4, cliente.getTelefono());
+        ps.setString(5, cliente.getEmail());
+        ps.setString(6, cliente.getDireccion());
+        ps.setInt(7, cliente.getIdCliente()); //
 
-        } catch (SQLException e) {
-            System.out.println("Error al actualizar cliente: " + e.getMessage());
-            return false;
-        }
+        return ps.executeUpdate() > 0;
+
+    } catch (SQLException e) {
+        System.out.println("Error al actualizar cliente: " + e.getMessage());
+        return false;
     }
+}
 
     // Eliminar cliente
     public boolean eliminarCliente(int idCliente) {

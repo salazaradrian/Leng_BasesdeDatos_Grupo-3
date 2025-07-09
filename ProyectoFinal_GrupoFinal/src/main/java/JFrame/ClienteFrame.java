@@ -24,7 +24,7 @@ public class ClienteFrame extends JFrame {
 
         repo = new ClienteRepositorio();
 
-         //Etiquetas
+        // Etiquetas
         addLabel("ID Cliente:", 20, 20);
         addLabel("Nombre:", 20, 60);
         addLabel("Primer Apellido:", 20, 100);
@@ -33,8 +33,9 @@ public class ClienteFrame extends JFrame {
         addLabel("Email:", 20, 220);
         addLabel("Dirección:", 20, 260);
 
-         //Campos de texto
+        // Campos de texto
         txtIdCliente = addTextField(150, 20);
+        txtIdCliente.setEditable(false); // ID no editable
         txtNombre = addTextField(150, 60);
         txtPrimerApellido = addTextField(150, 100);
         txtSegundoApellido = addTextField(150, 140);
@@ -42,23 +43,30 @@ public class ClienteFrame extends JFrame {
         txtEmail = addTextField(150, 220);
         txtDireccion = addTextField(150, 260);
 
-         //Botones
+        // Botones
         btnAgregar = addButton("Agregar", 400, 60);
         btnActualizar = addButton("Actualizar", 400, 100);
         btnEliminar = addButton("Eliminar", 400, 140);
         btnListar = addButton("Listar", 400, 180);
 
-         //Tabla
+        // Tabla
         tablaClientes = new JTable();
         JScrollPane scroll = new JScrollPane(tablaClientes);
         scroll.setBounds(20, 320, 840, 170);
         add(scroll);
 
-         //Eventos
+        // Eventos
         btnAgregar.addActionListener(e -> agregarCliente());
         btnActualizar.addActionListener(e -> actualizarCliente());
         btnEliminar.addActionListener(e -> eliminarCliente());
         btnListar.addActionListener(e -> listarClientes());
+
+        // Evento para cargar datos al hacer clic en la tabla
+        tablaClientes.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                cargarClienteDesdeTabla();
+            }
+        });
 
         listarClientes();
         setVisible(true);
@@ -129,8 +137,8 @@ public class ClienteFrame extends JFrame {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("ID");
         model.addColumn("Nombre");
-        model.addColumn("Apellido 1");
-        model.addColumn("Apellido 2");
+        model.addColumn("Primer Apellido");
+        model.addColumn("Segundo Apellido");
         model.addColumn("Teléfono");
         model.addColumn("Email");
         model.addColumn("Dirección");
@@ -150,6 +158,19 @@ public class ClienteFrame extends JFrame {
         tablaClientes.setModel(model);
     }
 
+    private void cargarClienteDesdeTabla() {
+        int fila = tablaClientes.getSelectedRow();
+        if (fila != -1) {
+            txtIdCliente.setText(tablaClientes.getValueAt(fila, 0).toString());
+            txtNombre.setText(tablaClientes.getValueAt(fila, 1).toString());
+            txtPrimerApellido.setText(tablaClientes.getValueAt(fila, 2).toString());
+            txtSegundoApellido.setText(tablaClientes.getValueAt(fila, 3).toString());
+            txtTelefono.setText(tablaClientes.getValueAt(fila, 4).toString());
+            txtEmail.setText(tablaClientes.getValueAt(fila, 5).toString());
+            txtDireccion.setText(tablaClientes.getValueAt(fila, 6).toString());
+        }
+    }
+
     private void limpiarCampos() {
         txtIdCliente.setText("");
         txtNombre.setText("");
@@ -160,7 +181,6 @@ public class ClienteFrame extends JFrame {
         txtDireccion.setText("");
     }
 
-     //Métodos auxiliares para crear componentes
     private void addLabel(String text, int x, int y) {
         JLabel label = new JLabel(text);
         label.setBounds(x, y, 120, 25);
@@ -185,3 +205,4 @@ public class ClienteFrame extends JFrame {
         SwingUtilities.invokeLater(ClienteFrame::new);
     }
 }
+
