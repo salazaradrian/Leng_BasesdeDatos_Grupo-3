@@ -2,38 +2,41 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 import modelo.Receta;
+import modelo.Ingrediente;
 import repositorio.RecetasRepositorio;
-
+import repositorio.IngredientesRepositorio;
 
 public class RecetasFrame extends JFrame {
-    private JTextField txtIdReceta, txtNombre, txtIdIngrediente;
+    private JTextField txtIdReceta, txtNombre;
+    private JComboBox<Ingrediente> comboIngredientes;
     private JButton btnAgregar, btnEditar, btnEliminar;
     private JTable tablaRecetas;
     private RecetasRepositorio repo;
- 
-   
+    private IngredientesRepositorio ingredientesRepo;
+
     public RecetasFrame() {
         setTitle("Gestión de Recetas");
-        setSize(400, 250);
+        setSize(600, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(5, 2, 10, 10));
-        
+        setLayout(new GridLayout(6, 2, 10, 10));
+
         repo = new RecetasRepositorio();
+        ingredientesRepo = new IngredientesRepositorio();
 
         add(new JLabel("ID Receta:"));
         txtIdReceta = new JTextField();
+        txtIdReceta.setEditable(false);
         add(txtIdReceta);
-        txtIdReceta.setEditable(false); // ID no editable;;
 
         add(new JLabel("Nombre:"));
         txtNombre = new JTextField();
         add(txtNombre);
-        
 
-        add(new JLabel("ID Ingrediente:"));
-        txtIdIngrediente = new JTextField();
-        add(txtIdIngrediente);
+        add(new JLabel("Ingrediente:"));
+        comboIngredientes = new JComboBox<>();
+        cargarIngredientes();
+        add(comboIngredientes);
 
         btnAgregar = new JButton("Agregar");
         btnEditar = new JButton("Editar");
@@ -43,25 +46,29 @@ public class RecetasFrame extends JFrame {
         add(btnEditar);
         add(btnEliminar);
 
-        setVisible(true);
-        
-        // Tabla
         tablaRecetas = new JTable();
         JScrollPane scroll = new JScrollPane(tablaRecetas);
-        scroll.setBounds(20, 320, 840, 170);
+        add(new JLabel("Listado de Recetas:"));
         add(scroll);
-        
-         // Eventos
+
         btnAgregar.addActionListener(e -> agregarReceta());
         btnEditar.addActionListener(e -> actualizarReceta());
         btnEliminar.addActionListener(e -> eliminarReceta());
-       
+        tablaRecetas.getSelectionModel().addListSelectionListener(e -> cargarRecetaDesdeTabla());
+
+        listarRecetas();
+        setVisible(true);
     }
-    
-private void agregarReceta() {
-        Receta receta = new Receta(
-            txtNombre.getText(),    
-        );
+
+    private void cargarIngredientes() {
+        for (Ingrediente ing : ingredientesRepo.listarIngredientes()) {
+            comboIngredientes.addItem(ing);
+        }
+    }
+
+    private void agregarReceta() {
+        Ingrediente seleccionado = (Ingrediente) comboIngredientes.getSelectedItem();
+        Receta receta = new Receta(txtNombre.getText(), seleccionado.getIdIngrediente());
 
         if (repo.agregarReceta(receta)) {
             JOptionPane.showMessageDialog(this, "Receta agregada exitosamente.");
@@ -75,12 +82,8 @@ private void agregarReceta() {
     private void actualizarReceta() {
         try {
             int id = Integer.parseInt(txtIdReceta.getText());
-
-            Receta receta = new Receta(
-                id,
-                txtNombre.getText(),
-               
-            );
+            Ingrediente seleccionado = (Ingrediente) comboIngredientes.getSelectedItem();
+            Receta receta = new Receta(id, txtNombre.getText(), seleccionado.getIdIngrediente());
 
             if (repo.actualizarReceta(receta)) {
                 JOptionPane.showMessageDialog(this, "Receta actualizada correctamente.");
@@ -103,7 +106,7 @@ private void agregarReceta() {
                 limpiarCampos();
                 listarRecetas();
             } else {
-                JOptionPane.showMessageDialog(this, "Error al eliminar cliente.");
+                JOptionPane.showMessageDialog(this, "Error al eliminar receta.");
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "ID inválido.");
@@ -114,13 +117,13 @@ private void agregarReceta() {
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("ID Receta");
         model.addColumn("Nombre");
-        model.addColumn("Primer Apellido");
-
+        model.addColumn("ID Ingrediente");
 
         for (Receta c : repo.listarRecetas()) {
             model.addRow(new Object[]{
                 c.getIdReceta(),
                 c.getNombre(),
+                c.getIdIngrediente()
             });
         }
 
@@ -132,38 +135,24 @@ private void agregarReceta() {
         if (fila != -1) {
             txtIdReceta.setText(tablaRecetas.getValueAt(fila, 0).toString());
             txtNombre.setText(tablaRecetas.getValueAt(fila, 1).toString());
-        
+
+            int idIngrediente = Integer.parseInt(tablaRecetas.getValueAt(fila, 2).toString());
+            for (int i = 0; i < comboIngredientes.getItemCount(); i++) {
+                if (comboIngredientes.getItemAt(i).getIdIngrediente() == idIngrediente) {
+                    comboIngredientes.setSelectedIndex(i);
+                    break;
+                }
+            }
         }
     }
 
     private void limpiarCampos() {
         txtIdReceta.setText("");
         txtNombre.setText("");
-     
-    }
-
-    private void addLabel(String text, int x, int y) {
-        JLabel label = new JLabel(text);
-        label.setBounds(x, y, 120, 25);
-        add(label);
-    }
-
-    private JTextField addTextField(int x, int y) {
-        JTextField field = new JTextField();
-        field.setBounds(x, y, 200, 25);
-        add(field);
-        return field;
-    }
-
-    private JButton addButton(String text, int x, int y) {
-        JButton button = new JButton(text);
-        button.setBounds(x, y, 120, 30);
-        add(button);
-        return button;
+        comboIngredientes.setSelectedIndex(0);
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(RecetasFrame::new);
     }
 }
-
