@@ -18,7 +18,7 @@ public class ClienteFrame extends JFrame {
     public ClienteFrame() {
         setTitle("Gestión de Clientes");
         setSize(900, 550);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(null);
 
@@ -70,6 +70,7 @@ public class ClienteFrame extends JFrame {
 
         listarClientes();
         setVisible(true);
+        setLocationRelativeTo(null); 
     }
 
     private void agregarCliente() {

@@ -20,7 +20,7 @@ public class MenuPrincipal extends JFrame {
 
         btnClientes.addActionListener((ActionEvent e) -> new ClienteFrame().setVisible(true));
         btnRecetas.addActionListener((ActionEvent e) -> new RecetasFrame().setVisible(true));
-        btnIngredientes.addActionListener((ActionEvent e) -> new IngredientesFrame().setVisible(true));
+        btnIngredientes.addActionListener((ActionEvent e) -> new IngredienteFrame().setVisible(true));
         btnFacturas.addActionListener((ActionEvent e) -> new FacturasFrame().setVisible(true));
         btnSalir.addActionListener((ActionEvent e) -> System.exit(0));
 
@@ -31,6 +31,8 @@ public class MenuPrincipal extends JFrame {
         add(btnSalir);
 
         setVisible(true);
+        
+        setLocationRelativeTo(null); 
     }
 
     public static void main(String[] args) {

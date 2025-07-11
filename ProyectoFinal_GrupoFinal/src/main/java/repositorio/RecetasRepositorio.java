@@ -1,4 +1,3 @@
-
 package repositorio;
 
 import conexion.ConexionOracle;
@@ -11,19 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 import modelo.Receta;
 
-
 public class RecetasRepositorio {
 
     // Crear receta
     public boolean agregarReceta(Receta receta) {
-        String sql = "INSERT INTO recetas "
-                   + "(nombre) "
-                   + "VALUES (?)";
+        String sql = "INSERT INTO recetas (nombre, id_ingrediente) VALUES (?, ?)";
         try (Connection conn = ConexionOracle.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, receta.getNombre());
-            
+            ps.setInt(2, receta.getIdIngrediente());
 
             return ps.executeUpdate() > 0;
 
@@ -33,21 +29,21 @@ public class RecetasRepositorio {
         }
     }
 
-    // Leer todos los clientes
+    // Leer todas las recetas
     public List<Receta> listarRecetas() {
         List<Receta> lista = new ArrayList<>();
-        String sql = "SELECT nombre"
-                   + "FROM recetas";
+        String sql = "SELECT id_receta, nombre, id_ingrediente FROM recetas";
 
         try (Connection conn = ConexionOracle.conectar();
              Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
-                Receta c = new Receta();
-                c.setIdReceta(rs.getInt("id_receta"));
-                c.setNombre(rs.getString("nombre"));
-                lista.add(c);
+                Receta r = new Receta();
+                r.setIdReceta(rs.getInt("id_receta"));
+                r.setNombre(rs.getString("nombre"));
+                r.setIdIngrediente(rs.getInt("id_ingrediente"));
+                lista.add(r);
             }
 
         } catch (SQLException e) {
@@ -57,24 +53,24 @@ public class RecetasRepositorio {
         return lista;
     }
 
-    //Actualizar recetas
-  public boolean actualizarReceta(Receta receta) {
-    String sql = "UPDATE recetas SET nombre = ?,"
-             + "WHERE id_cliente = ?";
+    // Actualizar receta
+    public boolean actualizarReceta(Receta receta) {
+        String sql = "UPDATE recetas SET nombre = ?, id_ingrediente = ? WHERE id_receta = ?";
 
-    try (Connection conn = ConexionOracle.conectar();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionOracle.conectar();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        ps.setString(1, receta.getNombre());
-        ps.setInt(2, receta.getIdReceta()); //
+            ps.setString(1, receta.getNombre());
+            ps.setInt(2, receta.getIdIngrediente());
+            ps.setInt(3, receta.getIdReceta());
 
-        return ps.executeUpdate() > 0;
+            return ps.executeUpdate() > 0;
 
-    } catch (SQLException e) {
-        System.out.println("Error al actualizar receta: " + e.getMessage());
-        return false;
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar receta: " + e.getMessage());
+            return false;
+        }
     }
-}
 
     // Eliminar receta
     public boolean eliminarReceta(int idReceta) {
@@ -91,4 +87,3 @@ public class RecetasRepositorio {
         }
     }
 }
-
