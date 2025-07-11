@@ -41,12 +41,12 @@ public class RecetasFrame extends JFrame {
         add(ingredientesCombo);
 
         guardarButton = new JButton("Guardar receta");
-        guardarButton.setBounds(10, 125, 310, 25);
+        guardarButton.setBounds(400, 60, 310, 25);
         add(guardarButton);
         
         
         eliminarButton = new JButton("Eliminar receta");
-        eliminarButton.setBounds(10 , 125, 310, 25);
+        eliminarButton.setBounds( 400,100 , 310, 25);
         add(eliminarButton);
 
         
@@ -92,7 +92,28 @@ public class RecetasFrame extends JFrame {
         }
     }
     
-    
+    private void eliminarReceta() {
+    int fila = tablaRecetas.getSelectedRow();
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(this, "Selecciona una receta para eliminar.");
+        return;
+    }
+
+    int id = (int) tablaRecetas.getValueAt(fila, 0);
+
+    int confirm = JOptionPane.showConfirmDialog(this, "¿Estás seguro de eliminar esta receta?", "Confirmar", JOptionPane.YES_NO_OPTION);
+    if (confirm == JOptionPane.YES_OPTION) {
+        if (recetasRepo.eliminarReceta(id)) {
+            JOptionPane.showMessageDialog(this, "Receta eliminada correctamente.");
+            cargarRecetas(); 
+            nombreField.setText("");
+            ingredientesCombo.setSelectedIndex(-1);
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al eliminar receta.");
+        }
+    }
+}
+
     
     
     private void cargarRecetas() {

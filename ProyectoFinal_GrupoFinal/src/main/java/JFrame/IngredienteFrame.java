@@ -11,7 +11,8 @@ public class IngredienteFrame extends JFrame {
     private JTable tablaIngredientes;
     private DefaultTableModel modeloTabla;
     private IngredienteRepositorio repositorio;
-
+    private JComboBox<String> comboCantidad;
+    
     public IngredienteFrame() {
         setTitle("Gestión de Ingredientes");
         setSize(900, 550);
@@ -27,23 +28,35 @@ public class IngredienteFrame extends JFrame {
         nombreField = new JTextField();
         nombreField.setBounds(20, 45, 300, 25);
         add(nombreField);
+        
+        JLabel cantidadLabel = new JLabel("Cantidad:");
+        cantidadLabel.setBounds(20, 75, 100, 25);
+        add(cantidadLabel);
+
+        String[] cantidades = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+        comboCantidad = new JComboBox<>(cantidades);
+        comboCantidad.setBounds(100, 75, 80, 25);
+        add(comboCantidad);
+
+
+
 
         JButton agregarBtn = new JButton("Agregar");
         agregarBtn.setBounds(330, 45, 100, 25);
         add(agregarBtn);
 
-        modeloTabla = new DefaultTableModel(new String[]{"ID", "Nombre"}, 0);
+        modeloTabla = new DefaultTableModel(new String[]{"ID", "Nombre", "Cantidad"}, 0);
         tablaIngredientes = new JTable(modeloTabla);
         JScrollPane scrollPane = new JScrollPane(tablaIngredientes);
-        scrollPane.setBounds(20, 90, 440, 200);
+        scrollPane.setBounds(40, 120, 440, 200);
         add(scrollPane);
 
         JButton editarBtn = new JButton("Editar");
-        editarBtn.setBounds(20, 300, 100, 25);
+        editarBtn.setBounds(60, 340, 100, 25);
         add(editarBtn);
 
         JButton eliminarBtn = new JButton("Eliminar");
-        eliminarBtn.setBounds(130, 300, 100, 25);
+        eliminarBtn.setBounds(60, 390, 100, 25);
         add(eliminarBtn);
 
         cargarIngredientes();
@@ -59,28 +72,40 @@ public class IngredienteFrame extends JFrame {
         modeloTabla.setRowCount(0);
         List<Ingrediente> lista = repositorio.listarIngredientes();
         for (Ingrediente ing : lista) {
-            modeloTabla.addRow(new Object[]{ing.getIdIngrediente(), ing.getNombre()});
+            modeloTabla.addRow(new Object[]{ing.getIdIngrediente(), ing.getNombre(), ing.getCantidad()});
         }
     }
 
     private void agregarIngrediente() {
-        String nombre = nombreField.getText().trim();
-        if (nombre.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío.");
-            return;
-        }
+    String nombre = nombreField.getText().trim();
+    String cantidadStr = (String) comboCantidad.getSelectedItem();
 
-        Ingrediente ing = new Ingrediente();
-        ing.setNombre(nombre);
-
-        if (repositorio.agregarIngrediente(ing)) {
-            JOptionPane.showMessageDialog(this, "Ingrediente agregado.");
-            nombreField.setText("");
-            cargarIngredientes();
-        } else {
-            JOptionPane.showMessageDialog(this, "Error al agregar ingrediente.");
-        }
+    if (nombre.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío.");
+        return;
     }
+
+    if (cantidadStr == null) {
+        JOptionPane.showMessageDialog(this, "Selecciona una cantidad válida.");
+        return;
+    }
+
+    int cantidad = Integer.parseInt(cantidadStr);
+
+    Ingrediente ing = new Ingrediente();
+    ing.setNombre(nombre);
+    ing.setCantidad(cantidad);
+
+    if (repositorio.agregarIngrediente(ing)) {
+        JOptionPane.showMessageDialog(this, "Ingrediente agregado.");
+        nombreField.setText("");
+        comboCantidad.setSelectedIndex(0);
+        cargarIngredientes();
+    } else {
+        JOptionPane.showMessageDialog(this, "Error al agregar ingrediente.");
+    }
+}
+
 
     private void editarIngrediente() {
         int fila = tablaIngredientes.getSelectedRow();

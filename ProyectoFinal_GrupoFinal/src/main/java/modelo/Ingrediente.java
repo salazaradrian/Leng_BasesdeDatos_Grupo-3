@@ -3,6 +3,7 @@ package modelo;
 public class Ingrediente {
     private int idIngrediente;
     private String nombre;
+    private int cantidad;
 
     // Constructor vacío
     public Ingrediente() {
@@ -12,6 +13,7 @@ public class Ingrediente {
     public Ingrediente(int idIngrediente, String nombre) {
         this.idIngrediente = idIngrediente;
         this.nombre = nombre;
+        this.cantidad = cantidad;
     }
 
     // Getters y Setters
@@ -31,12 +33,23 @@ public class Ingrediente {
         this.nombre = nombre;
     }
 
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+    
+    
+
     // Para mostrar en consola o debug
     @Override
-    public String toString() {
-        return "Ingrediente{" +
-                "idIngrediente=" + idIngrediente +
-                ", nombre='" + nombre + '\'' +
-                '}';
-    }
+public String toString() {
+    return "Ingrediente{" +
+            "idIngrediente=" + idIngrediente +
+            ", nombre='" + nombre + '\'' +
+            ", cantidad=" + cantidad +
+            '}';
+}
 }
