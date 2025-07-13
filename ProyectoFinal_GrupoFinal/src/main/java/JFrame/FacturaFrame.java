@@ -1,4 +1,3 @@
-
 package JFrame;
 
 import modelo.Factura;

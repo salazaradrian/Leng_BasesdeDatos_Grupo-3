@@ -35,7 +35,7 @@ public class ClienteFrame extends JFrame {
 
         // Campos de texto
         txtIdCliente = addTextField(150, 20);
-        txtIdCliente.setEditable(false); // ID no editable
+        txtIdCliente.setEditable(false);
         txtNombre = addTextField(150, 60);
         txtPrimerApellido = addTextField(150, 100);
         txtSegundoApellido = addTextField(150, 140);
