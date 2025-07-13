@@ -12,7 +12,7 @@ public class IngredienteFrame extends JFrame {
     private DefaultTableModel modeloTabla;
     private IngredienteRepositorio repositorio;
     private JComboBox<String> comboCantidad;
-    
+
     public IngredienteFrame() {
         setTitle("Gestión de Ingredientes");
         setSize(900, 550);
@@ -28,7 +28,7 @@ public class IngredienteFrame extends JFrame {
         nombreField = new JTextField();
         nombreField.setBounds(20, 45, 300, 25);
         add(nombreField);
-        
+
         JLabel cantidadLabel = new JLabel("Cantidad:");
         cantidadLabel.setBounds(20, 75, 100, 25);
         add(cantidadLabel);
@@ -38,12 +38,13 @@ public class IngredienteFrame extends JFrame {
         comboCantidad.setBounds(100, 75, 80, 25);
         add(comboCantidad);
 
-
-
-
         JButton agregarBtn = new JButton("Agregar");
         agregarBtn.setBounds(330, 45, 100, 25);
         add(agregarBtn);
+
+        JButton listarBtn = new JButton("Listar");
+        listarBtn.setBounds(330, 75, 100, 25);
+        add(listarBtn);
 
         modeloTabla = new DefaultTableModel(new String[]{"ID", "Nombre", "Cantidad"}, 0);
         tablaIngredientes = new JTable(modeloTabla);
@@ -52,20 +53,19 @@ public class IngredienteFrame extends JFrame {
         add(scrollPane);
 
         JButton editarBtn = new JButton("Editar");
-        editarBtn.setBounds(60, 340, 100, 25);
+        editarBtn.setBounds(450, 45, 100, 25);
         add(editarBtn);
 
         JButton eliminarBtn = new JButton("Eliminar");
-        eliminarBtn.setBounds(60, 390, 100, 25);
+        eliminarBtn.setBounds(450, 75, 100, 25);
         add(eliminarBtn);
 
-        cargarIngredientes();
-
         agregarBtn.addActionListener(e -> agregarIngrediente());
+        listarBtn.addActionListener(e -> cargarIngredientes());
         editarBtn.addActionListener(e -> editarIngrediente());
         eliminarBtn.addActionListener(e -> eliminarIngrediente());
-        
-        setLocationRelativeTo(null); 
+
+        setLocationRelativeTo(null);
     }
 
     private void cargarIngredientes() {
@@ -77,35 +77,34 @@ public class IngredienteFrame extends JFrame {
     }
 
     private void agregarIngrediente() {
-    String nombre = nombreField.getText().trim();
-    String cantidadStr = (String) comboCantidad.getSelectedItem();
+        String nombre = nombreField.getText().trim();
+        String cantidadStr = (String) comboCantidad.getSelectedItem();
 
-    if (nombre.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío.");
-        return;
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío.");
+            return;
+        }
+
+        if (cantidadStr == null) {
+            JOptionPane.showMessageDialog(this, "Selecciona una cantidad válida.");
+            return;
+        }
+
+        int cantidad = Integer.parseInt(cantidadStr);
+
+        Ingrediente ing = new Ingrediente();
+        ing.setNombre(nombre);
+        ing.setCantidad(cantidad);
+
+        if (repositorio.agregarIngrediente(ing)) {
+            JOptionPane.showMessageDialog(this, "Ingrediente agregado.");
+            nombreField.setText("");
+            comboCantidad.setSelectedIndex(0);
+            cargarIngredientes();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al agregar ingrediente.");
+        }
     }
-
-    if (cantidadStr == null) {
-        JOptionPane.showMessageDialog(this, "Selecciona una cantidad válida.");
-        return;
-    }
-
-    int cantidad = Integer.parseInt(cantidadStr);
-
-    Ingrediente ing = new Ingrediente();
-    ing.setNombre(nombre);
-    ing.setCantidad(cantidad);
-
-    if (repositorio.agregarIngrediente(ing)) {
-        JOptionPane.showMessageDialog(this, "Ingrediente agregado.");
-        nombreField.setText("");
-        comboCantidad.setSelectedIndex(0);
-        cargarIngredientes();
-    } else {
-        JOptionPane.showMessageDialog(this, "Error al agregar ingrediente.");
-    }
-}
-
 
     private void editarIngrediente() {
         int fila = tablaIngredientes.getSelectedRow();

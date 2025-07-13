@@ -1,4 +1,5 @@
 import JFrame.ClienteFrame;
+import JFrame.FacturaFrame;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -21,7 +22,7 @@ public class MenuPrincipal extends JFrame {
         btnClientes.addActionListener((ActionEvent e) -> new ClienteFrame().setVisible(true));
         btnRecetas.addActionListener((ActionEvent e) -> new RecetasFrame().setVisible(true));
         btnIngredientes.addActionListener((ActionEvent e) -> new IngredienteFrame().setVisible(true));
-        btnFacturas.addActionListener((ActionEvent e) -> new FacturasFrame().setVisible(true));
+        btnFacturas.addActionListener((ActionEvent e) -> new FacturaFrame().setVisible(true));
         btnSalir.addActionListener((ActionEvent e) -> System.exit(0));
 
         add(btnClientes);

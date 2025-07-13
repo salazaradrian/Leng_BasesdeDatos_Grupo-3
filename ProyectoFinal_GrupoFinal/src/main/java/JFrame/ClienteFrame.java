@@ -68,7 +68,7 @@ public class ClienteFrame extends JFrame {
             }
         });
 
-        listarClientes();
+        
         setVisible(true);
         setLocationRelativeTo(null); 
     }

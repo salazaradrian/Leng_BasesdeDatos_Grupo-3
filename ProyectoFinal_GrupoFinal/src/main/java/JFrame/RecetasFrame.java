@@ -49,18 +49,28 @@ public class RecetasFrame extends JFrame {
         eliminarButton.setBounds( 400,100 , 310, 25);
         add(eliminarButton);
 
-        
+        JButton listarButton = new JButton("Listar recetas");
+        listarButton.setBounds(400, 140, 310, 25);
+        add(listarButton);
+
+        listarButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cargarRecetas();
+            }
+        });
+
+
         
         
         modeloTabla = new DefaultTableModel(new String[]{"ID", "Nombre", "ID Ingrediente"}, 0);
         tablaRecetas = new JTable(modeloTabla);
         JScrollPane scrollPane = new JScrollPane(tablaRecetas);
-        scrollPane.setBounds(20, 150, 540, 230);
+        scrollPane.setBounds(20, 200, 540, 230);
         add(scrollPane);
 
 
         cargarIngredientes();
-        cargarRecetas();
+        
 
         guardarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
