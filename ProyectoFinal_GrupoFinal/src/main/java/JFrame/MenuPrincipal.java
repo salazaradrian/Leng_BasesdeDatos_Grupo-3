@@ -2,6 +2,9 @@ import JFrame.ClienteFrame;
 import JFrame.FacturaFrame;
 import JFrame.EmpleadoFrame;
 import JFrame.ProductoFrame;
+import JFrame.VentasFrame;
+import JFrame.RecetasFrame;
+
 
 
 import javax.swing.*;
@@ -22,6 +25,8 @@ public class MenuPrincipal extends JFrame {
         JButton btnProducto = new JButton("Gestión de Productos");
         JButton btnRecetas = new JButton("Gestión de Recetas");
         JButton btnIngredientes = new JButton("Gestión de Ingredientes");
+        JButton btnCompras = new JButton("Gestión de Compras");
+        JButton btnVentas = new JButton("Gestión de Ventas");
         JButton btnFacturas = new JButton("Gestión de Facturas");
         JButton btnSalir = new JButton("Salir");
 
@@ -30,6 +35,8 @@ public class MenuPrincipal extends JFrame {
         btnProducto.addActionListener((ActionEvent e) -> new ProductoFrame().setVisible(true));
         btnRecetas.addActionListener((ActionEvent e) -> new RecetasFrame().setVisible(true));
         btnIngredientes.addActionListener((ActionEvent e) -> new IngredienteFrame().setVisible(true));
+        btnCompras.addActionListener((ActionEvent e) -> new ComprasFrame().setVisible(true));
+        btnVentas.addActionListener((ActionEvent e) -> new VentasFrame().setVisible(true));
         btnFacturas.addActionListener((ActionEvent e) -> new FacturaFrame().setVisible(true));
         btnSalir.addActionListener((ActionEvent e) -> System.exit(0));
 
@@ -38,6 +45,8 @@ public class MenuPrincipal extends JFrame {
         add(btnProducto);
         add(btnRecetas);
         add(btnIngredientes);
+        add(btnCompras);
+        add(btnVentas);
         add(btnFacturas);
         add(btnSalir);
 

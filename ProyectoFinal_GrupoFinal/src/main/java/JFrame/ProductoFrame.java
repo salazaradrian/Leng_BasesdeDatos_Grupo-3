@@ -1,231 +1,255 @@
-/*
-* Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package JFrame;
-
-/**
- *
- * @author PC
- */
 
 import modelo.Producto;
 import repositorio.ProductoRepositorio;
-
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.*;
-
-
+import java.sql.*;
+import conexion.ConexionOracle;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 public class ProductoFrame extends JFrame {
-    
-    private JTextField txtIdProducto, txtNombre,txttipo, txtDescripcion,txtPrecio,txtidreceta, txtcantidad;
-    private JButton btnAgregar, btnActualizar, btnEliminar, btnListar;
+    private JTextField nombreField, tipoField, precioField, descripcionField, cantidadField;
+    private JComboBox<String> comboRecetas;
     private JTable tablaProductos;
+    private DefaultTableModel modeloTabla;
     private ProductoRepositorio repo;
-    
-    
-public ProductoFrame() {
-        setTitle("Gesti�n de Producto");
-        setSize(800, 500);
+
+    public ProductoFrame() {
+        setTitle("Gestión de Productos");
+        setSize(900, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
         setLayout(null);
+        setLocationRelativeTo(null);
 
         repo = new ProductoRepositorio();
 
-        // Etiquetas
-        addLabel("ID Producto:", 20, 20);
-        addLabel("Nombre:", 20, 60);
-        addLabel("Tipo:", 20, 100);
-        addLabel("Descripcion:", 20, 140);
-        addLabel("Precio:", 20, 180);
-        addLabel("ID Receta:", 20, 220);
-        addLabel("Cantidad:", 20, 260);
-       
+        JLabel nombreLabel = new JLabel("Nombre:");
+        nombreLabel.setBounds(20, 20, 100, 25);
+        add(nombreLabel);
 
-        // Campos de texto
-        txtIdProducto = addTextField(150, 20);
-        txtIdProducto.setEditable(false); // ID no editable
-        txtNombre = addTextField(150, 60);
-        txttipo = addTextField(150, 100);
-        txtPrecio = addTextField(150, 140);
-        txtDescripcion = addTextField(150, 180);
-        txtidreceta = addTextField(150, 220);
-        txtidreceta.setEditable(false);
-        txtcantidad = addTextField (150, 260);
-        
-       
-        // Botones
-        btnAgregar = addButton("Agregar", 400, 60);
-        btnActualizar = addButton("Actualizar", 400, 100);
-        btnEliminar = addButton("Eliminar", 400, 140);
-        btnListar = addButton("Listar", 400, 180);
+        nombreField = new JTextField();
+        nombreField.setBounds(120, 20, 200, 25);
+        add(nombreField);
 
-        // Tabla
-        tablaProductos = new JTable();
-        JScrollPane scroll = new JScrollPane(tablaProductos);
-        scroll.setBounds(20, 320, 840, 170);
-        add(scroll);
+        JLabel tipoLabel = new JLabel("Tipo:");
+        tipoLabel.setBounds(20, 60, 100, 25);
+        add(tipoLabel);
 
-        // Eventos
-        btnAgregar.addActionListener(e -> agregarProducto());
-        btnActualizar.addActionListener(e -> actualizarProducto());
-        btnEliminar.addActionListener(e -> eliminarProducto());
-        btnListar.addActionListener(e -> listarProductos());
+        tipoField = new JTextField();
+        tipoField.setBounds(120, 60, 200, 25);
+        add(tipoField);
 
-        // Evento para cargar datos al hacer clic en la tabla
+        JLabel precioLabel = new JLabel("Precio:");
+        precioLabel.setBounds(20, 100, 100, 25);
+        add(precioLabel);
+
+        precioField = new JTextField();
+        precioField.setBounds(120, 100, 200, 25);
+        add(precioField);
+
+        JLabel descripcionLabel = new JLabel("Descripción:");
+        descripcionLabel.setBounds(20, 140, 100, 25);
+        add(descripcionLabel);
+
+        descripcionField = new JTextField();
+        descripcionField.setBounds(120, 140, 200, 25);
+        add(descripcionField);
+
+        JLabel recetaLabel = new JLabel("Receta:");
+        recetaLabel.setBounds(20, 180, 100, 25);
+        add(recetaLabel);
+
+        comboRecetas = new JComboBox<>();
+        comboRecetas.setBounds(120, 180, 200, 25);
+        add(comboRecetas);
+
+        JLabel cantidadLabel = new JLabel("Cantidad:");
+        cantidadLabel.setBounds(20, 220, 100, 25);
+        add(cantidadLabel);
+
+        cantidadField = new JTextField();
+        cantidadField.setBounds(120, 220, 200, 25);
+        add(cantidadField);
+
+        JButton agregarBtn = new JButton("Agregar");
+        agregarBtn.setBounds(400, 20, 120, 30);
+        add(agregarBtn);
+
+        JButton editarBtn = new JButton("Editar");
+        editarBtn.setBounds(400, 60, 120, 30);
+        add(editarBtn);
+
+        JButton eliminarBtn = new JButton("Eliminar");
+        eliminarBtn.setBounds(400, 100, 120, 30);
+        add(eliminarBtn);
+
+        JButton listarBtn = new JButton("Listar");
+        listarBtn.setBounds(400, 140, 120, 30);
+        add(listarBtn);
+
+        modeloTabla = new DefaultTableModel(new String[]{"ID", "Nombre", "Tipo", "Precio", "Descripción", "ID Receta", "Cantidad"}, 0);
+        tablaProductos = new JTable(modeloTabla);
+        JScrollPane scrollPane = new JScrollPane(tablaProductos);
+        scrollPane.setBounds(20, 270, 840, 260);
+        add(scrollPane);
+
+        listarBtn.addActionListener(e -> cargarProductos());
+        agregarBtn.addActionListener(e -> agregarProducto());
+        editarBtn.addActionListener(e -> editarProducto());
+        eliminarBtn.addActionListener(e -> eliminarProducto());
+
         tablaProductos.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent evt) {
-                cargarProductosDesdeTabla();
+            public void mouseClicked(MouseEvent e) {
+                cargarProductoDesdeTabla();
             }
         });
 
-        listarProductos();
+        
+
         setVisible(true);
-        setLocationRelativeTo(null); 
     }
 
-    private void agregarProducto() {
-        
-        Producto producto = new Producto(
-            0,
-            txtNombre.getText(),
-            txttipo.getText(),   
-            txtDescripcion.getText(), 
-            Double.parseDouble(txtPrecio.getText()),
-            0,
-            Integer.parseInt(txtcantidad.getText()));
-                
-           
-        
+ 
 
-        if (repo.agregarProducto(producto)) {
-            JOptionPane.showMessageDialog(this, "Producto agregado exitosamente.");
-            limpiarCampos();
-            listarProductos();
-        } else {
-            JOptionPane.showMessageDialog(this, "Error al agregar Producto.");
+    private void cargarProductos() {
+        modeloTabla.setRowCount(0);
+        List<Producto> lista = repo.listarProductos();
+        for (Producto p : lista) {
+            modeloTabla.addRow(new Object[]{
+                    p.getIdProducto(),
+                    p.getNombre(),
+                    p.getTipo(),
+                    p.getPrecio(),
+                    p.getDescripcion(),
+                    p.getIdReceta(),
+                    p.getCantidad()
+            });
         }
     }
 
-    private void actualizarProducto() {
+    private void agregarProducto() {
         try {
-            int id = Integer.parseInt(txtIdProducto.getText());
+            String nombre = nombreField.getText().trim();
+            String tipo = tipoField.getText().trim();
+            double precio = Double.parseDouble(precioField.getText().trim());
+            String descripcion = descripcionField.getText().trim();
+            int cantidad = Integer.parseInt(cantidadField.getText().trim());
 
-            Producto producto = new Producto(
-                0,
-            txtNombre.getText(),
-            txttipo.getText(),
-            txtDescripcion.getText(),
-            Double.parseDouble(txtPrecio.getText()),
-            0,       
-            Integer.parseInt(txtcantidad.getText()));
-                
-              
+            if (nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío.");
+                return;
+            }
 
-            if (repo.actualizarProducto(producto)) {
-                JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.");
+            String recetaSeleccionada = (String) comboRecetas.getSelectedItem();
+            Integer idReceta = null;
+            if (recetaSeleccionada != null && !recetaSeleccionada.isEmpty()) {
+                idReceta = Integer.parseInt(recetaSeleccionada.split(" - ")[0]);
+            }
+
+            Producto p = new Producto(0, nombre, tipo, precio, descripcion, idReceta, cantidad);
+            if (repo.agregarProducto(p)) {
+                JOptionPane.showMessageDialog(this, "Producto agregado.");
                 limpiarCampos();
-                listarProductos();
+                cargarProductos();
             } else {
-                JOptionPane.showMessageDialog(this, "Error al actualizar Producto.");
+                JOptionPane.showMessageDialog(this, "Error al agregar producto.");
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "ID invalido.");
+            JOptionPane.showMessageDialog(this, "Precio o cantidad inválidos.");
+        }
+    }
+
+    private void editarProducto() {
+        int fila = tablaProductos.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Selecciona un producto para editar.");
+            return;
+        }
+
+        try {
+            int id = (int) modeloTabla.getValueAt(fila, 0);
+            String nombre = nombreField.getText().trim();
+            String tipo = tipoField.getText().trim();
+            double precio = Double.parseDouble(precioField.getText().trim());
+            String descripcion = descripcionField.getText().trim();
+            int cantidad = Integer.parseInt(cantidadField.getText().trim());
+
+            if (nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío.");
+                return;
+            }
+
+            String recetaSeleccionada = (String) comboRecetas.getSelectedItem();
+            Integer idReceta = null;
+            if (recetaSeleccionada != null && !recetaSeleccionada.isEmpty()) {
+                idReceta = Integer.parseInt(recetaSeleccionada.split(" - ")[0]);
+            }
+
+            Producto p = new Producto(id, nombre, tipo, precio, descripcion, idReceta, cantidad);
+            if (repo.actualizarProducto(p)) {
+                JOptionPane.showMessageDialog(this, "Producto actualizado.");
+                limpiarCampos();
+                cargarProductos();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al actualizar producto.");
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Precio o cantidad inválidos.");
         }
     }
 
     private void eliminarProducto() {
-        try {
-            int id = Integer.parseInt(txtIdProducto.getText());
-
-            if (repo.eliminarProducto(id)) {
-                JOptionPane.showMessageDialog(this, "Producto eliminado correctamente.");
-                limpiarCampos();
-                listarProductos();
-            } else {
-                JOptionPane.showMessageDialog(this, "Error al eliminar Producto.");
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "ID invalido.");
-        }
-    }
-
-    private void listarProductos() {
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("ID");
-        model.addColumn("Nombre");
-        model.addColumn("Tipo");
-        model.addColumn("Descripci�n");
-        model.addColumn("Precio");
-        model.addColumn("ID Receta");
-        model.addColumn("cantidad");
-        ;
-
-        for (Producto p : repo.listarProductos()) {
-            model.addRow(new Object[]{
-                p.getIdProducto(),
-                p.getNombre(),
-                p.gettipo(),
-                p.getDescripcion(),
-                p.getPrecio(),
-                p.getidreceta(),
-                p.getcantidad()   
-            });
-        }
-
-        tablaProductos.setModel(model);
-    }
-
-    private void cargarProductosDesdeTabla() {
         int fila = tablaProductos.getSelectedRow();
-        if (fila != -1) {
-            txtIdProducto.setText(tablaProductos.getValueAt(fila, 0).toString());
-            txtNombre.setText(tablaProductos.getValueAt(fila, 1).toString());
-            txttipo.setText(tablaProductos.getValueAt(fila, 2).toString());
-            txtPrecio.setText(tablaProductos.getValueAt(fila, 3).toString());
-            txtDescripcion.setText(tablaProductos.getValueAt(fila,4).toString());
-            txtidreceta.setText(tablaProductos.getValueAt(fila, 5).toString());
-            txtcantidad.setText(tablaProductos.getValueAt(fila, 6).toString());
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Selecciona un producto para eliminar.");
+            return;
+        }
 
+        int id = (int) modeloTabla.getValueAt(fila, 0);
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar producto?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (repo.eliminarProducto(id)) {
+                JOptionPane.showMessageDialog(this, "Producto eliminado.");
+                limpiarCampos();
+                cargarProductos();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al eliminar producto.");
+            }
         }
     }
 
     private void limpiarCampos() {
-        txtIdProducto.setText("");
-        txtNombre.setText("");
-        txttipo.setText("");
-        txtDescripcion.setText("");
-        txtPrecio.setText("");
-        txtidreceta.setText("");
-        txtcantidad.setText("");
+        nombreField.setText("");
+        tipoField.setText("");
+        precioField.setText("");
+        descripcionField.setText("");
+        cantidadField.setText("");
+        comboRecetas.setSelectedIndex(-1);
+    }
 
+    private void cargarProductoDesdeTabla() {
+        int fila = tablaProductos.getSelectedRow();
+        if (fila != -1) {
+            nombreField.setText(modeloTabla.getValueAt(fila, 1).toString());
+            tipoField.setText(modeloTabla.getValueAt(fila, 2).toString());
+            precioField.setText(modeloTabla.getValueAt(fila, 3).toString());
+            descripcionField.setText(modeloTabla.getValueAt(fila, 4).toString());
+            cantidadField.setText(modeloTabla.getValueAt(fila, 6).toString());
+
+            int idReceta = (modeloTabla.getValueAt(fila, 5) != null) ? (int) modeloTabla.getValueAt(fila, 5) : -1;
+            for (int i = 0; i < comboRecetas.getItemCount(); i++) {
+                String item = comboRecetas.getItemAt(i);
+                if (item.startsWith(idReceta + " -")) {
+                    comboRecetas.setSelectedIndex(i);
+                    break;
+                }
+            }
         }
-
-    private void addLabel(String text, int x, int y) {
-        JLabel label = new JLabel(text);
-        label.setBounds(x, y, 120, 25);
-        add(label);
     }
 
-    private JTextField addTextField(int x, int y) {
-        JTextField field = new JTextField();
-        field.setBounds(x, y, 200, 25);
-        add(field);
-        return field;
-    }
-
-    private JButton addButton(String text, int x, int y) {
-        JButton button = new JButton(text);
-        button.setBounds(x, y, 120, 30);
-        add(button);
-        return button;
-    }
-    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ProductoFrame::new);
-    }
+}
 }

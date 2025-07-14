@@ -1,45 +1,49 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo;
 import java.util.Date;
 
-/**
- *
- * @author Adrian Salazar R
- */
+import java.util.Date;
+
 public class Venta {
- private int idVenta;
-    private Date fecha;
-    private int idCliente;
-    private int idEmpleado;
-    private double total;
+    private int idVentas;                  
+    private int idCliente;                
+    private double montoTotal;            
+    private int cantidadProductosTotal;  
+    private int idEmpleado;               
+    private int idProducto;               
+    private Date fecha;                    
 
     public Venta() {}
 
-    public Venta(int idVenta, Date fecha, int idCliente, int idEmpleado, double total) {
-        this.idVenta = idVenta;
-        this.fecha = fecha;
+    public Venta(int idVenta, int idCliente, double montoTotal, int cantidadProductosTotal,
+                 int idEmpleado, int idProducto, Date fecha) {
+        this.idVentas = idVenta;
         this.idCliente = idCliente;
+        this.montoTotal = montoTotal;
+        this.cantidadProductosTotal = cantidadProductosTotal;
         this.idEmpleado = idEmpleado;
-        this.total = total;
+        this.idProducto = idProducto;
+        this.fecha = fecha;
     }
+    
+    public Venta(int idVenta, int idCliente, double montoTotal, int cantidadProductosTotal,
+             int idEmpleado, int idProducto) {
+    this.idVentas = idVenta;
+    this.idCliente = idCliente;
+    this.montoTotal = montoTotal;
+    this.cantidadProductosTotal = cantidadProductosTotal;
+    this.idEmpleado = idEmpleado;
+    this.idProducto = idProducto;
+}
+
+
+    // Getters y setters
 
     public int getIdVenta() {
-        return idVenta;
+        return idVentas;
     }
 
     public void setIdVenta(int idVenta) {
-        this.idVenta = idVenta;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
+        this.idVentas = idVenta;
     }
 
     public int getIdCliente() {
@@ -50,18 +54,45 @@ public class Venta {
         this.idCliente = idCliente;
     }
 
+    public double getMontoTotal() {
+        return montoTotal;
+    }
+
+    public void setMontoTotal(double montoTotal) {
+        this.montoTotal = montoTotal;
+    }
+
+    public int getCantidadProductosTotal() {
+        return cantidadProductosTotal;
+    }
+
+    public void setCantidadProductosTotal(int cantidadProductosTotal) {
+        this.cantidadProductosTotal = cantidadProductosTotal;
+    }
+
     public int getIdEmpleado() {
         return idEmpleado;
     }
 
     public void setIdEmpleado(int idEmpleado) {
-       this.idEmpleado = idEmpleado;
-}
-    public double getTotal() {
-        return total;
-}
+        this.idEmpleado = idEmpleado;
+    }
 
-        public void setTotal(double total) {
-            this.total = total;}
+    public int getIdProducto() {
+        return idProducto;
+    }
 
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+ 
 }

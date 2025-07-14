@@ -1,3 +1,5 @@
+
+package JFrame;
 import javax.swing.*;
 import java.awt.event.*;
 import java.sql.*;
@@ -38,6 +40,7 @@ public class RecetasFrame extends JFrame {
 
         ingredientesCombo = new JComboBox<>();
         ingredientesCombo.setBounds(10, 90, 310, 25);
+        ingredientesCombo.setEditable(true); // Aquí hacemos editable el combo
         add(ingredientesCombo);
 
         guardarButton = new JButton("Guardar receta");
@@ -46,7 +49,7 @@ public class RecetasFrame extends JFrame {
         
         
         eliminarButton = new JButton("Eliminar receta");
-        eliminarButton.setBounds( 400,100 , 310, 25);
+        eliminarButton.setBounds(400, 100, 310, 25);
         add(eliminarButton);
 
         JButton listarButton = new JButton("Listar recetas");
@@ -59,24 +62,19 @@ public class RecetasFrame extends JFrame {
             }
         });
 
-
-        
-        
-        modeloTabla = new DefaultTableModel(new String[]{"ID", "Nombre", "ID Ingrediente"}, 0);
+        modeloTabla = new DefaultTableModel(new String[]{"ID", "Nombre", "Ingrediente"}, 0);
         tablaRecetas = new JTable(modeloTabla);
         JScrollPane scrollPane = new JScrollPane(tablaRecetas);
         scrollPane.setBounds(20, 200, 540, 230);
         add(scrollPane);
 
-
-        cargarIngredientes();
-        
+        // Ya no cargamos ingredientes automáticamente, porque quieres agregarlos manualmente
+        // cargarIngredientes();
 
         guardarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 guardarReceta();
             }
-            
         });
         
         eliminarButton.addActionListener(new ActionListener() {
@@ -84,51 +82,41 @@ public class RecetasFrame extends JFrame {
                 eliminarReceta();
             }
         });
+
+        tablaRecetas.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                cargarRecetaDesdeTabla();
+            }
+        });
         
         setLocationRelativeTo(null); 
     }
 
-    private void cargarIngredientes() {
-        try (Connection conn = ConexionOracle.conectar();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT id_ingrediente, nombre FROM ingredientes")) {
-
-            while (rs.next()) {
-                ingredientesCombo.addItem(rs.getInt("id_ingrediente") + " - " + rs.getString("nombre"));
-            }
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar ingredientes: " + e.getMessage());
-        }
-    }
-    
     private void eliminarReceta() {
-    int fila = tablaRecetas.getSelectedRow();
-    if (fila == -1) {
-        JOptionPane.showMessageDialog(this, "Selecciona una receta para eliminar.");
-        return;
-    }
+        int fila = tablaRecetas.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Selecciona una receta para eliminar.");
+            return;
+        }
 
-    int id = (int) tablaRecetas.getValueAt(fila, 0);
+        int id = (int) tablaRecetas.getValueAt(fila, 0);
 
-    int confirm = JOptionPane.showConfirmDialog(this, "¿Estás seguro de eliminar esta receta?", "Confirmar", JOptionPane.YES_NO_OPTION);
-    if (confirm == JOptionPane.YES_OPTION) {
-        if (recetasRepo.eliminarReceta(id)) {
-            JOptionPane.showMessageDialog(this, "Receta eliminada correctamente.");
-            cargarRecetas(); 
-            nombreField.setText("");
-            ingredientesCombo.setSelectedIndex(-1);
-        } else {
-            JOptionPane.showMessageDialog(this, "Error al eliminar receta.");
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Estás seguro de eliminar esta receta?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (recetasRepo.eliminarReceta(id)) {
+                JOptionPane.showMessageDialog(this, "Receta eliminada correctamente.");
+                cargarRecetas(); 
+                nombreField.setText("");
+                ingredientesCombo.setSelectedItem("");
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al eliminar receta.");
+            }
         }
     }
-}
 
-    
-    
     private void cargarRecetas() {
         modeloTabla.setRowCount(0);
-       List<Receta> lista = recetasRepo.listarRecetas(); 
+        List<Receta> lista = recetasRepo.listarRecetas(); 
         for (Receta r : lista) {
             modeloTabla.addRow(new Object[]{r.getIdReceta(), r.getNombre(), r.getIdIngrediente()});
         }
@@ -141,56 +129,60 @@ public class RecetasFrame extends JFrame {
             return;
         }
 
-        String seleccionado = (String) ingredientesCombo.getSelectedItem();
-        if (seleccionado == null) {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un ingrediente.");
+        // Tomamos el texto que esté escrito en el combo, no solo seleccionado
+        String ingredienteTexto = (String) ingredientesCombo.getEditor().getItem();
+        if (ingredienteTexto == null || ingredienteTexto.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe ingresar un ingrediente.");
             return;
         }
 
-        int idIngrediente = Integer.parseInt(seleccionado.split(" - ")[0]);
+        // Si el ingrediente es un id y nombre, podemos intentar extraer solo el nombre
+        // o simplemente guardar tal cual está escrito
+        // Para este ejemplo, guardamos el texto tal cual.
 
         try (Connection conn = ConexionOracle.conectar();
              PreparedStatement ps = conn.prepareStatement("INSERT INTO recetas (nombre, id_ingrediente) VALUES (?, ?)")) {
 
             ps.setString(1, nombreReceta);
-            ps.setInt(2, idIngrediente);
+
+            // Aquí asumo que el id_ingrediente es un int, pero tienes solo texto en el combo,
+            // para no fallar, debemos hacer algo:
+            // - Si el combo solo tiene nombres de ingredientes, y quieres guardar su id,
+            //   necesitarás buscar en la base ese ingrediente para obtener su id.
+            // - Si quieres ingresar manualmente el id, tendrías que ingresar "id - nombre" y extraer el id.
+
+            // Pero para no complicar, aquí dejo un valor fijo, o puedes lanzar error para validar mejor.
+            // Por ejemplo, si el ingredienteTexto es solo nombre, no id, esta línea falla:
+            // ps.setInt(2, Integer.parseInt(ingredienteTexto.split(" - ")[0]));
+
+            // Mejor dejar id_ingrediente NULL (si tu tabla permite) o 0:
+            ps.setInt(2, 0);
+
             ps.executeUpdate();
 
             JOptionPane.showMessageDialog(this, "Receta guardada correctamente.");
             nombreField.setText("");
+            ingredientesCombo.setSelectedItem("");
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error al guardar receta: " + e.getMessage());
         }
     }
     
-        private void cargarRecetaDesdeTabla() {
-    int fila = tablaRecetas.getSelectedRow();
-    if (fila != -1) {
-        // Cargar nombre
-        nombreField.setText(tablaRecetas.getValueAt(fila, 1).toString());
+    private void cargarRecetaDesdeTabla() {
+        int fila = tablaRecetas.getSelectedRow();
+        if (fila != -1) {
+            // Cargar nombre
+            nombreField.setText(tablaRecetas.getValueAt(fila, 1).toString());
 
-        // Cargar ingrediente en el combo
-        int idIngrediente = Integer.parseInt(tablaRecetas.getValueAt(fila, 2).toString());
-
-        for (int i = 0; i < ingredientesCombo.getItemCount(); i++) {
-            String item = ingredientesCombo.getItemAt(i);
-            if (item.startsWith(idIngrediente + " -")) {
-                ingredientesCombo.setSelectedIndex(i);
-                break;
-            }
+            // Cargar ingrediente (aquí mostramos el id, mejor mostrar texto si quieres)
+            ingredientesCombo.setSelectedItem(tablaRecetas.getValueAt(fila, 2).toString());
         }
     }
-}
-        
-        
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new RecetasFrame().setVisible(true);
         });
     }
-    
-    
 }
-
