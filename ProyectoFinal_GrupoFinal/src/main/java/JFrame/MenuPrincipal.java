@@ -11,18 +11,18 @@ import java.awt.event.ActionEvent;
 public class MenuPrincipal extends JFrame {
 
     public MenuPrincipal() {
-        setTitle("Men Principal");
+        setTitle("Men煤 Principal");
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new GridLayout(7, 1, 10, 10));
 
-        JButton btnClientes = new JButton("Gesti髇 de Clientes");
-        JButton btnEmpleado = new JButton("Gesti髇 de Empleados");
-        JButton btnProducto = new JButton("Gesti髇 de Productos");
-        JButton btnRecetas = new JButton("Gesti髇 de Recetas");
-        JButton btnIngredientes = new JButton("Gesti髇 de Ingredientes");
-        JButton btnFacturas = new JButton("Gesti髇 de Facturas");
+        JButton btnClientes = new JButton("Gesti贸n de Clientes");
+        JButton btnEmpleado = new JButton("Gesti贸n de Empleados");
+        JButton btnProducto = new JButton("Gesti贸n de Productos");
+        JButton btnRecetas = new JButton("Gesti贸n de Recetas");
+        JButton btnIngredientes = new JButton("Gesti贸n de Ingredientes");
+        JButton btnFacturas = new JButton("Gesti贸n de Facturas");
         JButton btnSalir = new JButton("Salir");
 
         btnClientes.addActionListener((ActionEvent e) -> new ClienteFrame().setVisible(true));
