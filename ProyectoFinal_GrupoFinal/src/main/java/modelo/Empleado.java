@@ -12,16 +12,20 @@ public class Empleado {
   
 private int idEmpleado;
 private String nombre;
-private String puesto;
-private String telefono;
+private String primerApellido;
+private String segundoApellido;
+private Double salario;
+private String cargo;
 
 public Empleado() {}
 
-public Empleado(int idEmpleado, String nombre, String puesto, String telefono) {
+public Empleado(int idEmpleado, String nombre, String primerApellido, String segundoApellido, Double salario, String cargo) {
 this.idEmpleado = idEmpleado;
 this.nombre = nombre;
-this.puesto = puesto;
-this.telefono = telefono;
+this.primerApellido = primerApellido;
+this.segundoApellido = segundoApellido;
+this.salario = salario;
+this.cargo = cargo;
 }
 
 public int getIdEmpleado() {
@@ -36,24 +40,40 @@ public String getNombre() {
 return nombre;
 }
 
+ public String getPrimerApellido() {
+        return primerApellido;
+    }
+
+    public void setPrimerApellido(String primerApellido) {
+        this.primerApellido = primerApellido;
+    }
+
+    public String getSegundoApellido() {
+        return segundoApellido;
+    }
+
+    public void setSegundoApellido(String segundoApellido) {
+        this.segundoApellido = segundoApellido;
+    }
+
 public void setNombre(String nombre) {
 this.nombre = nombre;
 }
 
- public String getPuesto() {
-return puesto;
+ public Double getsalario() {
+return salario;
 }
 
-public void setPuesto(String puesto) {
-this.puesto = puesto;
+public void setsalario(Double salario) {
+this.salario = salario;
 }
 
-public String getTelefono() {
-return telefono;
+public String getcargo() {
+return cargo;
 }
 
-public void setTelefono(String telefono) {
-this.telefono = telefono;
+public void setcargo(String cargo) {
+this.cargo = cargo;
 }
   
 }

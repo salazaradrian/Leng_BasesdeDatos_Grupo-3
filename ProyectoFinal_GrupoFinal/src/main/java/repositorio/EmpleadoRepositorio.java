@@ -18,13 +18,16 @@ public class EmpleadoRepositorio {
     
     
     public boolean agregarEmpleado(Empleado empleado) {
-        String sql = "INSERT INTO empleados (nombre, puesto, telefono) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO empleados  "
+                   + "(nombre, primer_apellido, segundo_apellido,  puesto, telefono) VALUES (?, ?, ?)";
         try (Connection conn = ConexionOracle.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, empleado.getNombre());
-            ps.setString(2, empleado.getPuesto());
-            ps.setString(3, empleado.getTelefono());
+            ps.setString(2, empleado.getPrimerApellido());
+            ps.setString(3, empleado.getSegundoApellido());
+            ps.setDouble(4, empleado.getsalario());
+            ps.setString(5, empleado.getcargo());
 
             return ps.executeUpdate() > 0;
 
@@ -46,8 +49,10 @@ public class EmpleadoRepositorio {
                 Empleado e = new Empleado();
                 e.setIdEmpleado(rs.getInt("id_empleado"));
                 e.setNombre(rs.getString("nombre"));
-                e.setPuesto(rs.getString("puesto"));
-                e.setTelefono(rs.getString("telefono"));
+                e.setPrimerApellido(rs.getString("primer_apellido"));
+                e.setSegundoApellido(rs.getString("segundo_apellido"));
+                e.setsalario(rs.getDouble("salario"));
+                e.setcargo(rs.getString("cargo"));
                 lista.add(e);
             }
 
@@ -59,14 +64,16 @@ public class EmpleadoRepositorio {
     }
 
     public boolean actualizarEmpleado(Empleado empleado) {
-        String sql = "UPDATE empleados SET nombre = ?, puesto = ?, telefono = ? WHERE id_empleado = ?";
+        String sql = "UPDATE empleados SET nombre = ?, primer_apellido = ?, segundo_apellido = ?, salario = ?, cargo = ? WHERE id_empleado = ?";
         try (Connection conn = ConexionOracle.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, empleado.getNombre());
-            ps.setString(2, empleado.getPuesto());
-            ps.setString(3, empleado.getTelefono());
-            ps.setInt(4, empleado.getIdEmpleado());
+            ps.setString(2, empleado.getPrimerApellido());
+            ps.setString(3, empleado.getSegundoApellido());
+            ps.setDouble(4, empleado.getsalario());
+            ps.setString(5, empleado.getcargo());
+            ps.setInt(6, empleado.getIdEmpleado());
 
             return ps.executeUpdate() > 0;
 

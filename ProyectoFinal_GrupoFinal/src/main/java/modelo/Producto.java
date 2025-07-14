@@ -11,18 +11,21 @@ package modelo;
 public class Producto {
     private int idProducto;
     private String nombre;
+    private String tipo;    
     private String descripcion;
     private double precio;
-    private int stock;
+    private int idreceta;
+    private int cantidad;
 
     public Producto() {}
 
-    public Producto(int idProducto, String nombre, String descripcion, double precio, int stock) {
+    public Producto(int idProducto, String nombre, String tipo,String descripcion, double precio, int idreceta, int cantidad) {
         this.idProducto = idProducto;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
-        this.stock = stock;
+        this.idreceta = idreceta;
+        this.cantidad = cantidad;
     }
 
     public int getIdProducto() {
@@ -41,6 +44,15 @@ public class Producto {
         this.nombre = nombre;
     }
 
+    
+        public String gettipo() {
+        return nombre;
+    }
+
+    public void settipo(String tipo) {
+        this.nombre = nombre;
+    }
+    
     public String getDescripcion() {
         return descripcion;
     }
@@ -57,11 +69,20 @@ public class Producto {
         this.precio = precio;
     }
 
-    public int getStock() {
-        return stock;
+    
+    public int getidreceta() {
+        return idProducto;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
+    public void setidreceta(int idreceta) {
+        this.idreceta = idreceta;
+    }
+    
+    public int getcantidad() {
+        return cantidad;
+    }
+
+    public void setcantidad(int cantidad) {
+        this.cantidad = cantidad;
     }
 }

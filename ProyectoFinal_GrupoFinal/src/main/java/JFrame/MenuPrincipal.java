@@ -1,5 +1,9 @@
 import JFrame.ClienteFrame;
 import JFrame.FacturaFrame;
+import JFrame.EmpleadoFrame;
+import JFrame.ProductoFrame;
+
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,25 +11,31 @@ import java.awt.event.ActionEvent;
 public class MenuPrincipal extends JFrame {
 
     public MenuPrincipal() {
-        setTitle("Men煤 Principal");
-        setSize(400, 400);
+        setTitle("Men Principal");
+        setSize(400, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(5, 1, 10, 10));
+        setLayout(new GridLayout(7, 1, 10, 10));
 
-        JButton btnClientes = new JButton("Gesti贸n de Clientes");
-        JButton btnRecetas = new JButton("Gesti贸n de Recetas");
-        JButton btnIngredientes = new JButton("Gesti贸n de Ingredientes");
-        JButton btnFacturas = new JButton("Gesti贸n de Facturas");
+        JButton btnClientes = new JButton("Gesti髇 de Clientes");
+        JButton btnEmpleado = new JButton("Gesti髇 de Empleados");
+        JButton btnProducto = new JButton("Gesti髇 de Productos");
+        JButton btnRecetas = new JButton("Gesti髇 de Recetas");
+        JButton btnIngredientes = new JButton("Gesti髇 de Ingredientes");
+        JButton btnFacturas = new JButton("Gesti髇 de Facturas");
         JButton btnSalir = new JButton("Salir");
 
         btnClientes.addActionListener((ActionEvent e) -> new ClienteFrame().setVisible(true));
+        btnEmpleado.addActionListener((ActionEvent e) -> new EmpleadoFrame().setVisible(true));
+        btnProducto.addActionListener((ActionEvent e) -> new ProductoFrame().setVisible(true));
         btnRecetas.addActionListener((ActionEvent e) -> new RecetasFrame().setVisible(true));
         btnIngredientes.addActionListener((ActionEvent e) -> new IngredienteFrame().setVisible(true));
         btnFacturas.addActionListener((ActionEvent e) -> new FacturaFrame().setVisible(true));
         btnSalir.addActionListener((ActionEvent e) -> System.exit(0));
 
         add(btnClientes);
+        add(btnEmpleado);
+        add(btnProducto);
         add(btnRecetas);
         add(btnIngredientes);
         add(btnFacturas);
@@ -40,3 +50,4 @@ public class MenuPrincipal extends JFrame {
         SwingUtilities.invokeLater(() -> new MenuPrincipal().setVisible(true));
     }
 }
+
