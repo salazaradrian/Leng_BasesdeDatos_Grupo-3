@@ -79,7 +79,7 @@ public EmpleadoFrame() {
             }
         });
 
-        listarEmpleados();
+
         setVisible(true);
         setLocationRelativeTo(null);
     }
