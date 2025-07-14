@@ -19,7 +19,7 @@ public class EmpleadoRepositorio {
     
     public boolean agregarEmpleado(Empleado empleado) {
         String sql = "INSERT INTO empleados  "
-                   + "(nombre, primer_apellido, segundo_apellido,  puesto, telefono) VALUES (?, ?, ?)";
+                   + "(nombre, primer_apellido, segundo_apellido,  salario, cargo) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = ConexionOracle.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 

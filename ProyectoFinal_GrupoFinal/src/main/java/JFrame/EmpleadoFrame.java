@@ -28,7 +28,7 @@ public class EmpleadoFrame extends JFrame {
    
    
 public EmpleadoFrame() {
-        setTitle("Gestión de Empleado");
+        setTitle("GestiÃ³n de Empleado");
         setSize(700, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -37,7 +37,7 @@ public EmpleadoFrame() {
         repo = new EmpleadoRepositorio();
 
         // Etiquetas
-        addLabel("ID Cliente:", 20, 20);
+        addLabel("ID Empleado:", 20, 20);
         addLabel("Nombre:", 20, 60);
         addLabel("Primer Apellido:", 20, 100);
         addLabel("Segundo Apellido:", 20, 140);
