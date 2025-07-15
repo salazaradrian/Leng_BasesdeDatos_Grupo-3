@@ -29,7 +29,7 @@ public class EmpleadoFrame extends JFrame {
    
 public EmpleadoFrame() {
         setTitle("Gestión de Empleado");
-        setSize(700, 500);
+        setSize(900, 550);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(null);
@@ -42,17 +42,17 @@ public EmpleadoFrame() {
         addLabel("Primer Apellido:", 20, 100);
         addLabel("Segundo Apellido:", 20, 140);
         addLabel("salario:", 20, 180);
-        addLabel("cargo:", 20, 260);
+        addLabel("cargo:", 20, 220);
        
 
         // Campos de texto
         txtIdEmpleado = addTextField(150, 20);
         txtIdEmpleado.setEditable(false); // ID no editable
-        txtNombre = addTextField(140, 60);
+        txtNombre = addTextField(150, 60);
         txtPrimerApellido = addTextField(150, 100);
         txtSegundoApellido = addTextField(150, 140);
-        txtsalario = addTextField(140, 180);
-        txtcargo = addTextField(140, 220);
+        txtsalario = addTextField(150, 180);
+        txtcargo = addTextField(150, 220);
        
         // Botones
         btnAgregar = addButton("Agregar", 400, 60);
