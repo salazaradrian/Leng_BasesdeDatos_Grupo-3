@@ -3,9 +3,7 @@ package JFrame;
 import javax.swing.*;
 import java.awt.event.*;
 import java.sql.*;
-import java.util.ArrayList;
 import conexion.ConexionOracle;
-import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
 public class VentasFrame extends JFrame {
@@ -15,13 +13,8 @@ public class VentasFrame extends JFrame {
     private JTable tablaVentas;
     private DefaultTableModel modeloTabla;
 
-    private List<Venta> listaVentas = new ArrayList<>();
-    private int idVentaAutoIncremental = 1;
-
     public VentasFrame() {
         try {
-            System.out.println("Abriendo VentasFrame...");
-
             setTitle("Gestión de Ventas");
             setSize(900, 600);
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -69,19 +62,6 @@ public class VentasFrame extends JFrame {
             comboEmpleados.setBounds(120, 180, 200, 25);
             add(comboEmpleados);
 
-            // Botones para agregar nuevos datos manualmente
-            JButton btnNuevoCliente = new JButton("Nuevo Cliente");
-            btnNuevoCliente.setBounds(330, 20, 150, 25);
-            add(btnNuevoCliente);
-
-            JButton btnNuevoProducto = new JButton("Nuevo Producto");
-            btnNuevoProducto.setBounds(330, 60, 150, 25);
-            add(btnNuevoProducto);
-
-            JButton btnNuevoEmpleado = new JButton("Nuevo Empleado");
-            btnNuevoEmpleado.setBounds(330, 180, 150, 25);
-            add(btnNuevoEmpleado);
-
             JButton agregarBtn = new JButton("Agregar");
             agregarBtn.setBounds(500, 20, 120, 30);
             add(agregarBtn);
@@ -123,33 +103,36 @@ public class VentasFrame extends JFrame {
 
             comboProductos.addActionListener(e -> calcularMontoTotal());
 
-            // Botones para ingresar datos manuales
-            btnNuevoCliente.addActionListener(e -> {
-                String input = JOptionPane.showInputDialog(this, "Ingrese cliente (Ej: 4 - Pedro Soto):");
-                if (input != null && !input.trim().isEmpty()) {
-                    comboClientes.addItem(input.trim());
-                }
-            });
-
-            btnNuevoProducto.addActionListener(e -> {
-                String input = JOptionPane.showInputDialog(this, "Ingrese producto con precio (Ej: 13 - Café - 120.0):");
-                if (input != null && !input.trim().isEmpty()) {
-                    comboProductos.addItem(input.trim());
-                }
-            });
-
-            btnNuevoEmpleado.addActionListener(e -> {
-                String input = JOptionPane.showInputDialog(this, "Ingrese empleado (Ej: 102 - José Quesada):");
-                if (input != null && !input.trim().isEmpty()) {
-                    comboEmpleados.addItem(input.trim());
-                }
-            });
-
+            cargarCombos();
             setVisible(true);
 
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error al cargar VentasFrame: " + e.getMessage());
+        }
+    }
+
+    private void cargarCombos() {
+        try (Connection conn = ConexionOracle.conectar()) {
+            Statement stmt = conn.createStatement();
+
+            ResultSet rsClientes = stmt.executeQuery("SELECT nombre FROM clientes");
+            while (rsClientes.next()) {
+                comboClientes.addItem(rsClientes.getString("nombre"));
+            }
+
+            ResultSet rsProductos = stmt.executeQuery("SELECT nombre || ' - ' || precio AS producto FROM productos");
+            while (rsProductos.next()) {
+                comboProductos.addItem(rsProductos.getString("producto"));
+            }
+
+            ResultSet rsEmpleados = stmt.executeQuery("SELECT nombre FROM empleados");
+            while (rsEmpleados.next()) {
+                comboEmpleados.addItem(rsEmpleados.getString("nombre"));
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar combos: " + e.getMessage());
         }
     }
 
@@ -160,7 +143,7 @@ public class VentasFrame extends JFrame {
                 montoTotalField.setText("");
                 return;
             }
-            double precio = Double.parseDouble(productoSeleccionado.split(" - ")[2]);
+            double precio = Double.parseDouble(productoSeleccionado.split(" - ")[1]);
             int cantidad = Integer.parseInt(cantidadField.getText().trim());
             double total = precio * cantidad;
             montoTotalField.setText(String.format("%.2f", total));
@@ -171,47 +154,44 @@ public class VentasFrame extends JFrame {
 
     private void cargarVentas() {
         modeloTabla.setRowCount(0);
-        for (Venta v : listaVentas) {
-            modeloTabla.addRow(new Object[]{
-                    v.getIdVenta(),
-                    v.getCliente(),
-                    v.getProducto(),
-                    v.getCantidadProductosTotal(),
-                    v.getMontoTotal(),
-                    v.getEmpleado()
-            });
+        try (Connection conn = ConexionOracle.conectar();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT * FROM ventas")) {
+
+            while (rs.next()) {
+                modeloTabla.addRow(new Object[]{
+                    rs.getInt("id_venta"),
+                    rs.getString("cliente"),
+                    rs.getString("producto"),
+                    rs.getInt("cantidad"),
+                    rs.getDouble("monto_total"),
+                    rs.getString("empleado")
+                });
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar ventas: " + e.getMessage());
         }
     }
 
     private void agregarVenta() {
-        try {
-            String clienteSeleccionado = (String) comboClientes.getSelectedItem();
-            String productoSeleccionado = (String) comboProductos.getSelectedItem();
-            String empleadoSeleccionado = (String) comboEmpleados.getSelectedItem();
-            int cantidad = Integer.parseInt(cantidadField.getText().trim());
-            double montoTotal = Double.parseDouble(montoTotalField.getText().trim());
+        try (Connection conn = ConexionOracle.conectar()) {
+            String sql = "INSERT INTO ventas (cliente, producto, cantidad, monto_total, empleado) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
 
-            if (clienteSeleccionado == null || productoSeleccionado == null || empleadoSeleccionado == null) {
-                JOptionPane.showMessageDialog(this, "Debe seleccionar cliente, producto y empleado.");
-                return;
-            }
+            ps.setString(1, (String) comboClientes.getSelectedItem());
+            ps.setString(2, (String) comboProductos.getSelectedItem());
+            ps.setInt(3, Integer.parseInt(cantidadField.getText().trim()));
+            ps.setDouble(4, Double.parseDouble(montoTotalField.getText().trim()));
+            ps.setString(5, (String) comboEmpleados.getSelectedItem());
 
-            Venta v = new Venta(
-                    idVentaAutoIncremental++,
-                    clienteSeleccionado,
-                    productoSeleccionado,
-                    cantidad,
-                    montoTotal,
-                    empleadoSeleccionado
-            );
-
-            listaVentas.add(v);
+            ps.executeUpdate();
             JOptionPane.showMessageDialog(this, "Venta agregada.");
             limpiarCampos();
             cargarVentas();
 
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Cantidad o monto inválidos.");
+        } catch (SQLException | NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error al agregar venta: " + e.getMessage());
         }
     }
 
@@ -221,31 +201,27 @@ public class VentasFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "Selecciona una venta para editar.");
             return;
         }
-        try {
-            String clienteSeleccionado = (String) comboClientes.getSelectedItem();
-            String productoSeleccionado = (String) comboProductos.getSelectedItem();
-            String empleadoSeleccionado = (String) comboEmpleados.getSelectedItem();
-            int cantidad = Integer.parseInt(cantidadField.getText().trim());
-            double montoTotal = Double.parseDouble(montoTotalField.getText().trim());
 
-            if (clienteSeleccionado == null || productoSeleccionado == null || empleadoSeleccionado == null) {
-                JOptionPane.showMessageDialog(this, "Debe seleccionar cliente, producto y empleado.");
-                return;
-            }
+        int idVenta = (int) modeloTabla.getValueAt(fila, 0);
 
-            Venta v = listaVentas.get(fila);
-            v.setCliente(clienteSeleccionado);
-            v.setProducto(productoSeleccionado);
-            v.setCantidadProductosTotal(cantidad);
-            v.setMontoTotal(montoTotal);
-            v.setEmpleado(empleadoSeleccionado);
+        try (Connection conn = ConexionOracle.conectar()) {
+            String sql = "UPDATE ventas SET cliente=?, producto=?, cantidad=?, monto_total=?, empleado=? WHERE id_venta=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
 
+            ps.setString(1, (String) comboClientes.getSelectedItem());
+            ps.setString(2, (String) comboProductos.getSelectedItem());
+            ps.setInt(3, Integer.parseInt(cantidadField.getText().trim()));
+            ps.setDouble(4, Double.parseDouble(montoTotalField.getText().trim()));
+            ps.setString(5, (String) comboEmpleados.getSelectedItem());
+            ps.setInt(6, idVenta);
+
+            ps.executeUpdate();
             JOptionPane.showMessageDialog(this, "Venta actualizada.");
             limpiarCampos();
             cargarVentas();
 
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Cantidad o monto inválidos.");
+        } catch (SQLException | NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error al editar venta: " + e.getMessage());
         }
     }
 
@@ -255,12 +231,24 @@ public class VentasFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "Selecciona una venta para eliminar.");
             return;
         }
+
+        int idVenta = (int) modeloTabla.getValueAt(fila, 0);
+
         int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar venta?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            listaVentas.remove(fila);
-            JOptionPane.showMessageDialog(this, "Venta eliminada.");
-            limpiarCampos();
-            cargarVentas();
+            try (Connection conn = ConexionOracle.conectar()) {
+                String sql = "DELETE FROM ventas WHERE id_venta=?";
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setInt(1, idVenta);
+                ps.executeUpdate();
+
+                JOptionPane.showMessageDialog(this, "Venta eliminada.");
+                limpiarCampos();
+                cargarVentas();
+
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Error al eliminar venta: " + e.getMessage());
+            }
         }
     }
 
@@ -275,94 +263,11 @@ public class VentasFrame extends JFrame {
     private void cargarVentaDesdeTabla() {
         int fila = tablaVentas.getSelectedRow();
         if (fila != -1) {
-            Venta v = listaVentas.get(fila);
-
-            for (int i = 0; i < comboClientes.getItemCount(); i++) {
-                if (comboClientes.getItemAt(i).equals(v.getCliente())) {
-                    comboClientes.setSelectedIndex(i);
-                    break;
-                }
-            }
-            for (int i = 0; i < comboProductos.getItemCount(); i++) {
-                if (comboProductos.getItemAt(i).equals(v.getProducto())) {
-                    comboProductos.setSelectedIndex(i);
-                    break;
-                }
-            }
-            cantidadField.setText(String.valueOf(v.getCantidadProductosTotal()));
-            montoTotalField.setText(String.format("%.2f", v.getMontoTotal()));
-            for (int i = 0; i < comboEmpleados.getItemCount(); i++) {
-                if (comboEmpleados.getItemAt(i).equals(v.getEmpleado())) {
-                    comboEmpleados.setSelectedIndex(i);
-                    break;
-                }
-            }
+            comboClientes.setSelectedItem(modeloTabla.getValueAt(fila, 1));
+            comboProductos.setSelectedItem(modeloTabla.getValueAt(fila, 2));
+            cantidadField.setText(modeloTabla.getValueAt(fila, 3).toString());
+            montoTotalField.setText(modeloTabla.getValueAt(fila, 4).toString());
+            comboEmpleados.setSelectedItem(modeloTabla.getValueAt(fila, 5));
         }
     }
-
-    static class Venta {
-        private int idVenta;
-        private String cliente;
-        private String producto;
-        private int cantidadProductosTotal;
-        private double montoTotal;
-        private String empleado;
-
-        public Venta(int idVenta, String cliente, String producto, int cantidadProductosTotal, double montoTotal, String empleado) {
-            this.idVenta = idVenta;
-            this.cliente = cliente;
-            this.producto = producto;
-            this.cantidadProductosTotal = cantidadProductosTotal;
-            this.montoTotal = montoTotal;
-            this.empleado = empleado;
-        }
-
-        public int getIdVenta() {
-            return idVenta;
-        }
-
-        public String getCliente() {
-            return cliente;
-        }
-
-        public void setCliente(String cliente) {
-            this.cliente = cliente;
-        }
-
-        public String getProducto() {
-            return producto;
-        }
-
-        public void setProducto(String producto) {
-            this.producto = producto;
-        }
-
-        public int getCantidadProductosTotal() {
-            return cantidadProductosTotal;
-        }
-
-        public void setCantidadProductosTotal(int cantidadProductosTotal) {
-            this.cantidadProductosTotal = cantidadProductosTotal;
-        }
-
-        public double getMontoTotal() {
-            return montoTotal;
-        }
-
-        public void setMontoTotal(double montoTotal) {
-            this.montoTotal = montoTotal;
-        }
-
-        public String getEmpleado() {
-            return empleado;
-        }
-
-        public void setEmpleado(String empleado) {
-            this.empleado = empleado;
-        }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(VentasFrame::new);
-}
 }
