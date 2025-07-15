@@ -8,6 +8,7 @@ import java.sql.*;
 import conexion.ConexionOracle;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
+import repositorio.RecetasRepositorio;
 
 public class ProductoFrame extends JFrame {
     private JTextField nombreField, tipoField, precioField, descripcionField, cantidadField;
@@ -64,14 +65,15 @@ public class ProductoFrame extends JFrame {
         comboRecetas = new JComboBox<>();
         comboRecetas.setBounds(120, 180, 200, 25);
         add(comboRecetas);
+               cargarRecetas(); 
 
-        JLabel cantidadLabel = new JLabel("Cantidad:");
-        cantidadLabel.setBounds(20, 220, 100, 25);
-        add(cantidadLabel);
+//        JLabel cantidadLabel = new JLabel("Cantidad:");
+//        cantidadLabel.setBounds(20, 220, 100, 25);
+//        add(cantidadLabel);
 
-        cantidadField = new JTextField();
-        cantidadField.setBounds(120, 220, 200, 25);
-        add(cantidadField);
+//        cantidadField = new JTextField();
+//        cantidadField.setBounds(120, 220, 200, 25);
+//        add(cantidadField);
 
         JButton agregarBtn = new JButton("Agregar");
         agregarBtn.setBounds(400, 20, 120, 30);
@@ -89,7 +91,7 @@ public class ProductoFrame extends JFrame {
         listarBtn.setBounds(400, 140, 120, 30);
         add(listarBtn);
 
-        modeloTabla = new DefaultTableModel(new String[]{"ID", "Nombre", "Tipo", "Precio", "Descripción", "ID Receta", "Cantidad"}, 0);
+        modeloTabla = new DefaultTableModel(new String[]{"ID", "Nombre", "Tipo", "Precio", "Descripción", "ID Receta"}, 0);
         tablaProductos = new JTable(modeloTabla);
         JScrollPane scrollPane = new JScrollPane(tablaProductos);
         scrollPane.setBounds(20, 270, 840, 260);
@@ -111,7 +113,17 @@ public class ProductoFrame extends JFrame {
         setVisible(true);
     }
 
- 
+   private void cargarRecetas() {
+    RecetasRepositorio recetasRepo = new RecetasRepositorio();
+    List<String> recetas = recetasRepo.obtenerRecetas();
+    comboRecetas.removeAllItems();
+    for (String receta : recetas) {
+        comboRecetas.addItem(receta);
+    }
+}
+
+
+    
 
     private void cargarProductos() {
         modeloTabla.setRowCount(0);
@@ -124,10 +136,11 @@ public class ProductoFrame extends JFrame {
                     p.getPrecio(),
                     p.getDescripcion(),
                     p.getIdReceta(),
-                    p.getCantidad()
+                    
             });
         }
     }
+
 
     private void agregarProducto() {
         try {
@@ -135,7 +148,7 @@ public class ProductoFrame extends JFrame {
             String tipo = tipoField.getText().trim();
             double precio = Double.parseDouble(precioField.getText().trim());
             String descripcion = descripcionField.getText().trim();
-            int cantidad = Integer.parseInt(cantidadField.getText().trim());
+//            int cantidad = Integer.parseInt(cantidadField.getText().trim());
 
             if (nombre.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío.");
@@ -148,7 +161,7 @@ public class ProductoFrame extends JFrame {
                 idReceta = Integer.parseInt(recetaSeleccionada.split(" - ")[0]);
             }
 
-            Producto p = new Producto(0, nombre, tipo, precio, descripcion, idReceta, cantidad);
+            Producto p = new Producto(0, nombre, tipo, precio, descripcion, idReceta);
             if (repo.agregarProducto(p)) {
                 JOptionPane.showMessageDialog(this, "Producto agregado.");
                 limpiarCampos();
@@ -157,7 +170,7 @@ public class ProductoFrame extends JFrame {
                 JOptionPane.showMessageDialog(this, "Error al agregar producto.");
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Precio o cantidad inválidos.");
+            JOptionPane.showMessageDialog(this, "Precio inválido.");
         }
     }
 
@@ -174,7 +187,7 @@ public class ProductoFrame extends JFrame {
             String tipo = tipoField.getText().trim();
             double precio = Double.parseDouble(precioField.getText().trim());
             String descripcion = descripcionField.getText().trim();
-            int cantidad = Integer.parseInt(cantidadField.getText().trim());
+//            int cantidad = Integer.parseInt(cantidadField.getText().trim());
 
             if (nombre.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío.");
@@ -187,7 +200,7 @@ public class ProductoFrame extends JFrame {
                 idReceta = Integer.parseInt(recetaSeleccionada.split(" - ")[0]);
             }
 
-            Producto p = new Producto(id, nombre, tipo, precio, descripcion, idReceta, cantidad);
+            Producto p = new Producto(id, nombre, tipo, precio, descripcion, idReceta);
             if (repo.actualizarProducto(p)) {
                 JOptionPane.showMessageDialog(this, "Producto actualizado.");
                 limpiarCampos();
@@ -225,7 +238,7 @@ public class ProductoFrame extends JFrame {
         tipoField.setText("");
         precioField.setText("");
         descripcionField.setText("");
-        cantidadField.setText("");
+//        cantidadField.setText("");
         comboRecetas.setSelectedIndex(-1);
     }
 
@@ -236,7 +249,7 @@ public class ProductoFrame extends JFrame {
             tipoField.setText(modeloTabla.getValueAt(fila, 2).toString());
             precioField.setText(modeloTabla.getValueAt(fila, 3).toString());
             descripcionField.setText(modeloTabla.getValueAt(fila, 4).toString());
-            cantidadField.setText(modeloTabla.getValueAt(fila, 6).toString());
+//            cantidadField.setText(modeloTabla.getValueAt(fila, 6).toString());
 
             int idReceta = (modeloTabla.getValueAt(fila, 5) != null) ? (int) modeloTabla.getValueAt(fila, 5) : -1;
             for (int i = 0; i < comboRecetas.getItemCount(); i++) {

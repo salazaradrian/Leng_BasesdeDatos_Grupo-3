@@ -11,6 +11,29 @@ import java.util.List;
 import modelo.Receta;
 
 public class RecetasRepositorio {
+    
+    
+    //obtener recertas
+public List<String> obtenerRecetas() {
+    List<String> recetas = new ArrayList<>();
+    String sql = "SELECT id_receta, nombre FROM recetas";
+
+    try (Connection conn = ConexionOracle.conectar();
+         Statement stmt = conn.createStatement();
+         ResultSet rs = stmt.executeQuery(sql)) {
+
+        while (rs.next()) {
+            int id = rs.getInt("id_receta");
+            String nombre = rs.getString("nombre");
+            recetas.add(id + " - " + nombre);
+        }
+
+    } catch (SQLException e) {
+        System.out.println("Error al obtener recetas: " + e.getMessage());
+    }
+
+    return recetas;
+}
 
     // Crear receta
     public boolean agregarReceta(Receta receta) {
@@ -86,4 +109,6 @@ public class RecetasRepositorio {
             return false;
         }
     }
+   
+
 }
