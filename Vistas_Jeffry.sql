@@ -48,3 +48,20 @@ WHERE
     precio > 2000
 ORDER BY
     precio DESC;
+
+-- Vista para categorizar productos en rangos de precio
+CREATE OR REPLACE VIEW vista_productos_por_rango_precio AS
+SELECT
+    id_producto,
+    nombre AS nombre_producto,
+    precio,
+    CASE
+        WHEN precio < 1500 THEN 'Bajo'
+        WHEN precio BETWEEN 1500 AND 2000 THEN 'Medio'
+        ELSE 'Alto'
+    END AS rango_precio
+FROM
+    productos
+ORDER BY
+    precio DESC;
+
