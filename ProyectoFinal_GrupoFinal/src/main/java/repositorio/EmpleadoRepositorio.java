@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class EmpleadoRepositorio {
     
-    
+    //Metodo para AGREGAR empleado
     public boolean agregarEmpleado(Empleado empleado) {
         String sql = "INSERT INTO empleados  "
                    + "(nombre, primer_apellido, segundo_apellido,  salario, cargo) VALUES (?, ?, ?, ?, ?)";
@@ -36,7 +36,7 @@ public class EmpleadoRepositorio {
             return false;
         }
     }
-
+     //Metodo para LISTAR empleado
     public List<Empleado> listarEmpleados() {
         List<Empleado> lista = new ArrayList<>();
         String sql = "SELECT * FROM empleados";
@@ -62,7 +62,7 @@ public class EmpleadoRepositorio {
 
         return lista;
     }
-
+        //Metodo para ACTUALIZAR empleado
     public boolean actualizarEmpleado(Empleado empleado) {
         String sql = "UPDATE empleados SET nombre = ?, primer_apellido = ?, segundo_apellido = ?, salario = ?, cargo = ? WHERE id_empleado = ?";
         try (Connection conn = ConexionOracle.conectar();
@@ -82,7 +82,7 @@ public class EmpleadoRepositorio {
             return false;
         }
     }
-
+                //Metodo para ELIMINAR empleado
     public boolean eliminarEmpleado(int idEmpleado) {
         String sql = "DELETE FROM empleados WHERE id_empleado = ?";
         try (Connection conn = ConexionOracle.conectar();

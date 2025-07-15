@@ -43,7 +43,7 @@ public class Ingrediente {
     
     
 
-    // Para mostrar en consola o debug
+    
     @Override
 public String toString() {
     return "Ingrediente{" +

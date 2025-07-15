@@ -72,7 +72,7 @@ public EmpleadoFrame() {
         btnEliminar.addActionListener(e -> eliminarEmpleado());
         btnListar.addActionListener(e -> listarEmpleados());
 
-        // Evento para cargar datos al hacer clic en la tabla
+        // Cargar datos al hacer clic en la tabla
         tablaEmpleados.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 cargarEmpleadosDesdeTabla();
