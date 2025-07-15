@@ -11,7 +11,8 @@ public class ComprasRepositorio {
 
     // Insertar compra
     public boolean agregarCompra(Compras compra) {
-        String sql = "INSERT INTO compras (id_ingrediente, cantidad_ingredientes, monto_total) VALUES (?, ?, ?)";
+      //  String sql = "INSERT INTO compras (id_ingrediente, cantidad_ingredientes, monto_total) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO compras (id_ingrediente, fecha, cantidad_ingredientes, monto_total) VALUES (?, ?, ?, ?)";
         try (Connection conn = ConexionOracle.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
