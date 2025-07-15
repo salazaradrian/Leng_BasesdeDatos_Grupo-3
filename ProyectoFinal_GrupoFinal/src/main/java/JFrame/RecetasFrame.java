@@ -68,8 +68,7 @@ public class RecetasFrame extends JFrame {
         scrollPane.setBounds(20, 200, 540, 230);
         add(scrollPane);
 
-        // Ya no cargamos ingredientes automáticamente, porque quieres agregarlos manualmente
-        // cargarIngredientes();
+        
 
         guardarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -129,33 +128,18 @@ public class RecetasFrame extends JFrame {
             return;
         }
 
-        // Tomamos el texto que esté escrito en el combo, no solo seleccionado
         String ingredienteTexto = (String) ingredientesCombo.getEditor().getItem();
         if (ingredienteTexto == null || ingredienteTexto.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Debe ingresar un ingrediente.");
             return;
         }
 
-        // Si el ingrediente es un id y nombre, podemos intentar extraer solo el nombre
-        // o simplemente guardar tal cual está escrito
-        // Para este ejemplo, guardamos el texto tal cual.
 
         try (Connection conn = ConexionOracle.conectar();
              PreparedStatement ps = conn.prepareStatement("INSERT INTO recetas (nombre, id_ingrediente) VALUES (?, ?)")) {
 
             ps.setString(1, nombreReceta);
 
-            // Aquí asumo que el id_ingrediente es un int, pero tienes solo texto en el combo,
-            // para no fallar, debemos hacer algo:
-            // - Si el combo solo tiene nombres de ingredientes, y quieres guardar su id,
-            //   necesitarás buscar en la base ese ingrediente para obtener su id.
-            // - Si quieres ingresar manualmente el id, tendrías que ingresar "id - nombre" y extraer el id.
-
-            // Pero para no complicar, aquí dejo un valor fijo, o puedes lanzar error para validar mejor.
-            // Por ejemplo, si el ingredienteTexto es solo nombre, no id, esta línea falla:
-            // ps.setInt(2, Integer.parseInt(ingredienteTexto.split(" - ")[0]));
-
-            // Mejor dejar id_ingrediente NULL (si tu tabla permite) o 0:
             ps.setInt(2, 0);
 
             ps.executeUpdate();
@@ -172,10 +156,10 @@ public class RecetasFrame extends JFrame {
     private void cargarRecetaDesdeTabla() {
         int fila = tablaRecetas.getSelectedRow();
         if (fila != -1) {
-            // Cargar nombre
+        
             nombreField.setText(tablaRecetas.getValueAt(fila, 1).toString());
 
-            // Cargar ingrediente (aquí mostramos el id, mejor mostrar texto si quieres)
+       
             ingredientesCombo.setSelectedItem(tablaRecetas.getValueAt(fila, 2).toString());
         }
     }
