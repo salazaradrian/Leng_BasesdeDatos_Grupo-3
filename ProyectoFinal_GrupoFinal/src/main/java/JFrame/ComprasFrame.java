@@ -83,7 +83,7 @@ public class ComprasFrame extends JFrame {
 
         int idIngrediente;
         try {
-            // Intentamos extraer id si viene en formato "id - nombre"
+            
             idIngrediente = Integer.parseInt(ingredienteTexto.split(" - ")[0].trim());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "El ingrediente debe tener un ID válido al inicio (ejemplo: '5 - Azúcar').");
