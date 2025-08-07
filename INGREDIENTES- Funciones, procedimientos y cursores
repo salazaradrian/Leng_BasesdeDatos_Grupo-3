@@ -1,0 +1,60 @@
+CREATE OR REPLACE PROCEDURE agregar_ingrediente (
+    p_nombre    IN ingredientes.nombre%TYPE,
+    p_cantidad  IN ingredientes.cantidad%TYPE
+) AS
+BEGIN
+    INSERT INTO ingredientes (nombre, cantidad)
+    VALUES (p_nombre, p_cantidad);
+
+    COMMIT; 
+
+END;
+/
+----------------------------------
+
+CREATE OR REPLACE FUNCTION listar_ingredientes
+RETURN SYS_REFCURSOR AS
+    -- Declar la variable de tipo cursor
+    ingredientes_cursor SYS_REFCURSOR;
+BEGIN
+    -- Abrimos el cursor
+    OPEN ingredientes_cursor FOR
+    SELECT 
+        id_ingrediente, 
+        nombre, 
+        cantidad
+    FROM 
+        ingredientes;
+
+    -- Devolver el cursor con los resultados
+    RETURN ingredientes_cursor;
+END;
+/
+
+----------------------
+
+CREATE OR REPLACE PROCEDURE actualizar_ingrediente(
+    p_id_ingrediente IN ingredientes.id_ingrediente%TYPE,
+    p_nombre    IN ingredientes.nombre%TYPE
+) AS
+BEGIN
+    UPDATE ingredientes
+    SET nombre = p_nombre
+    WHERE id_ingrediente = p_id_ingrediente;
+    
+COMMIT;
+
+END;
+/
+
+-----------------------
+
+CREATE OR REPLACE PROCEDURE eliminar_ingrediente(
+    p_id_ingrediente IN ingredientes.id_ingrediente%TYPE
+) AS
+BEGIN
+    DELETE FROM ingredientes WHERE id_ingrediente = p_id_ingrediente;
+    
+COMMIT;
+
+END;
