@@ -1,0 +1,46 @@
+CREATE OR REPLACE PROCEDURE agregar_compra(
+    p_id_ingrediente     IN compras.id_ingrediente%TYPE,
+    p_cantidad_ingredientes IN compras.cantidad_ingredientes%TYPE,
+    p_monto_total      IN compras.monto_total%TYPE
+) AS
+BEGIN
+
+    INSERT INTO compras (id_ingrediente, cantidad_ingredientes, monto_total)
+    VALUES (p_id_ingrediente, p_cantidad_ingredientes, p_monto_total);
+
+    COMMIT;
+END;
+/
+
+
+CREATE OR REPLACE FUNCTION listar_compras
+RETURN SYS_REFCURSOR
+AS
+    v_cursor SYS_REFCURSOR;
+BEGIN
+    
+    OPEN v_cursor FOR
+        SELECT
+            id_compra,
+            id_ingrediente,
+            fecha,
+            cantidad_ingredientes,
+            monto_total
+        FROM compras;
+
+    RETURN v_cursor;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE eliminar_compra (
+    p_id_compra IN NUMBER
+)
+AS
+BEGIN
+    DELETE FROM compras
+    WHERE id_compra = p_id_compra;
+   
+COMMIT;
+    
+END;
+
