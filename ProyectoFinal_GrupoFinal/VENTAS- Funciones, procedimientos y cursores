@@ -1,0 +1,84 @@
+CREATE OR REPLACE PROCEDURE agregar_venta (
+    p_id_cliente IN NUMBER,
+    p_monto_total IN NUMBER,
+    p_cantidad_productos_total IN NUMBER,
+    p_id_empleado IN NUMBER,
+    p_id_producto IN NUMBER
+)
+AS
+BEGIN
+    INSERT INTO ventas (
+        id_cliente,
+        monto_total,
+        cantidad_productos_total,
+        id_empleado,
+        id_producto
+    ) VALUES (
+        p_id_cliente,
+        p_monto_total,
+        p_cantidad_productos_total,
+        p_id_empleado,
+        p_id_producto
+    );
+
+    COMMIT;
+    
+END;
+/
+
+
+
+CREATE OR REPLACE PROCEDURE editar_venta (
+    p_id_ventas IN NUMBER,
+    p_id_cliente IN NUMBER,
+    p_monto_total IN NUMBER,
+    p_cantidad_productos_total IN NUMBER,
+    p_id_empleado IN NUMBER,
+    p_id_producto IN NUMBER
+)
+AS
+BEGIN
+  
+    UPDATE ventas
+    SET
+        id_cliente = p_id_cliente,
+        monto_total = p_monto_total,
+        cantidad_productos_total = p_cantidad_productos_total,
+        id_empleado = p_id_empleado,
+        id_producto = p_id_producto
+    WHERE id_ventas = p_id_ventas;
+
+    COMMIT;
+
+END;
+/
+
+CREATE OR REPLACE FUNCTION listar_ventas
+RETURN SYS_REFCURSOR
+AS
+    cur_ventas SYS_REFCURSOR;
+BEGIN
+    OPEN cur_ventas FOR
+    SELECT
+        id_ventas,
+        id_cliente,
+        monto_total,
+        cantidad_productos_total,
+        id_empleado,
+        id_producto
+    FROM ventas;
+
+    RETURN cur_ventas;
+END;
+/
+
+CREATE OR REPLACE PROCEDURE eliminar_venta (
+    p_id_ventas IN NUMBER
+)
+AS
+BEGIN
+    DELETE FROM ventas
+    WHERE id_ventas = p_id_ventas;
+    
+    COMMIT;
+END;
