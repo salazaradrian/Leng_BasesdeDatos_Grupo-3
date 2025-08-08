@@ -14,10 +14,10 @@ END;
 
 CREATE OR REPLACE FUNCTION listar_ingredientes
 RETURN SYS_REFCURSOR AS
-    -- Declar la variable de tipo cursor
+    
     ingredientes_cursor SYS_REFCURSOR;
 BEGIN
-    -- Abrimos el cursor
+   
     OPEN ingredientes_cursor FOR
     SELECT 
         id_ingrediente, 
@@ -25,8 +25,6 @@ BEGIN
         cantidad
     FROM 
         ingredientes;
-
-    -- Devolver el cursor con los resultados
     RETURN ingredientes_cursor;
 END;
 /
