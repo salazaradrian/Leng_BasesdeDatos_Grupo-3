@@ -1,3 +1,5 @@
+package JFrame;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
@@ -134,7 +136,7 @@ public class ComprasFrame extends JFrame {
 
     private void listarCompras() {
         modeloTabla.setRowCount(0);
-        
+        // Se llama al repositorio para obtener la lista
         List<Compras> lista = repositorio.listarCompras();
         for (Compras compra : lista) {
             modeloTabla.addRow(new Object[]{
