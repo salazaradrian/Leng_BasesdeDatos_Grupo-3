@@ -40,22 +40,26 @@ public class RecetasFrame extends JFrame {
 
         ingredientesCombo = new JComboBox<>();
         ingredientesCombo.setBounds(10, 90, 310, 25);
-        ingredientesCombo.setEditable(true); // Aquí hacemos editable el combo
+        ingredientesCombo.setEditable(true); 
         add(ingredientesCombo);
 
-        guardarButton = new JButton("Guardar receta");
-        guardarButton.setBounds(400, 60, 310, 25);
+        guardarButton = new JButton("Guardar");
+        guardarButton.setBounds(400, 30, 150, 25);
         add(guardarButton);
         
         
-        eliminarButton = new JButton("Eliminar receta");
-        eliminarButton.setBounds(400, 100, 310, 25);
+        eliminarButton = new JButton("Eliminar");
+        eliminarButton.setBounds(400, 60, 150, 25);
         add(eliminarButton);
 
-        JButton listarButton = new JButton("Listar recetas");
-        listarButton.setBounds(400, 140, 310, 25);
+        JButton listarButton = new JButton("Listar");
+        listarButton.setBounds(400, 90, 150, 25);
         add(listarButton);
 
+        JButton actualizarButton = new JButton("Actualizar");
+        actualizarButton.setBounds(400, 120, 150, 25);
+        add(actualizarButton);
+ 
         listarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 cargarRecetas();
@@ -81,6 +85,7 @@ public class RecetasFrame extends JFrame {
                 eliminarReceta();
             }
         });
+actualizarButton.addActionListener(e -> actualizarReceta());
 
         tablaRecetas.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -163,6 +168,46 @@ public class RecetasFrame extends JFrame {
             ingredientesCombo.setSelectedItem(tablaRecetas.getValueAt(fila, 2).toString());
         }
     }
+   
+//    ---PENDIENTE DE CREACION DE INGREDIENTES 
+    private void actualizarReceta() {
+    int fila = tablaRecetas.getSelectedRow();
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(this, "Selecciona una receta para actualizar.");
+        return;
+    }
+
+    int id = (int) tablaRecetas.getValueAt(fila, 0);
+    String nombreReceta = nombreField.getText().trim();
+    String ingredienteTexto = (String) ingredientesCombo.getEditor().getItem();
+
+    if (nombreReceta.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío.");
+        return;
+    }
+
+    if (ingredienteTexto == null || ingredienteTexto.trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Debe ingresar un ingrediente.");
+        return;
+    }
+
+    int idIngrediente = 0; 
+
+    Receta receta = new Receta();
+    receta.setIdReceta(id);
+    receta.setNombre(nombreReceta);
+    receta.setIdIngrediente(idIngrediente);
+
+    if (recetasRepo.actualizarReceta(receta)) {
+        JOptionPane.showMessageDialog(this, "Receta actualizada correctamente.");
+        cargarRecetas();
+        nombreField.setText("");
+        ingredientesCombo.setSelectedItem("");
+    } else {
+        JOptionPane.showMessageDialog(this, "Error al actualizar receta.");
+    }
+}
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

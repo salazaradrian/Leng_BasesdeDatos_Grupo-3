@@ -19,7 +19,7 @@ public class ProductoFrame extends JFrame {
 
     public ProductoFrame() {
         setTitle("Gestión de Productos");
-        setSize(900, 600);
+        setSize(900, 550);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(null);
         setLocationRelativeTo(null);
@@ -79,7 +79,7 @@ public class ProductoFrame extends JFrame {
         agregarBtn.setBounds(400, 20, 120, 30);
         add(agregarBtn);
 
-        JButton editarBtn = new JButton("Editar");
+        JButton editarBtn = new JButton("Actualizar");
         editarBtn.setBounds(400, 60, 120, 30);
         add(editarBtn);
 
@@ -259,7 +259,7 @@ public class ProductoFrame extends JFrame {
                     break;
                 }
             }
-        }
+        } 
     }
 
     public static void main(String[] args) {
