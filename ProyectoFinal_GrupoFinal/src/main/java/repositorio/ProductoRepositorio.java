@@ -1,7 +1,92 @@
+//package repositorio;
+//
+//import conexion.ConexionOracle;
+//import modelo.Producto;
+//
+//import java.sql.*;
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//public class ProductoRepositorio {
+//
+//    public boolean agregarProducto(Producto p) {
+//        String sql = "INSERT INTO productos (nombre, tipo, precio, descripcion, id_receta) VALUES (?, ?, ?, ?, ?)";
+//        try (Connection conn = ConexionOracle.conectar();
+//             PreparedStatement stmt = conn.prepareStatement(sql)) {
+//            stmt.setString(1, p.getNombre());
+//            stmt.setString(2, p.getTipo());
+//            stmt.setDouble(3, p.getPrecio());
+//            stmt.setString(4, p.getDescripcion());
+//            stmt.setInt(5, p.getIdReceta());
+//            stmt.executeUpdate();
+//            return true;
+//        } catch (SQLException e) {
+//            System.out.println("Error al agregar producto: " + e.getMessage());
+//            return false;
+//        }
+//    }
+//
+//    public List<Producto> listarProductos() {
+//    List<Producto> lista = new ArrayList<>();
+//    String sql = "SELECT * FROM productos";
+//    try (Connection conn = ConexionOracle.conectar();
+//         Statement stmt = conn.createStatement();
+//         ResultSet rs = stmt.executeQuery(sql)) {
+//        while (rs.next()) {
+//            Producto p = new Producto(
+//                rs.getInt("id_producto"),
+//                rs.getString("nombre"),
+//                rs.getString("tipo"),
+//                rs.getDouble("precio"),
+//                rs.getString("descripcion"),
+//                rs.getInt("id_receta")
+//            );
+//            lista.add(p);
+//        }
+//    } catch (SQLException e) {
+//        System.out.println("Error al listar productos: " + e.getMessage());
+//    }
+//    return lista;
+//}
+//
+//
+//   public boolean actualizarProducto(Producto p) {
+//    String sql = "UPDATE productos SET nombre = ?, tipo = ?, precio = ?, descripcion = ?, id_receta = ? WHERE id_producto = ?";
+//    try (Connection conn = ConexionOracle.conectar();
+//         PreparedStatement stmt = conn.prepareStatement(sql)) {
+//        stmt.setString(1, p.getNombre());
+//        stmt.setString(2, p.getTipo());
+//        stmt.setDouble(3, p.getPrecio());
+//        stmt.setString(4, p.getDescripcion());
+//        stmt.setInt(5, p.getIdReceta());
+//        stmt.setInt(6, p.getIdProducto());
+//        stmt.executeUpdate();
+//        return true;
+//    } catch (SQLException e) {
+//        System.out.println("Error al actualizar producto: " + e.getMessage());
+//        return false;
+//    }
+//}
+//
+//
+//    public boolean eliminarProducto(int id) {
+//        String sql = "DELETE FROM productos WHERE id_producto = ?";
+//        try (Connection conn = ConexionOracle.conectar();
+//             PreparedStatement stmt = conn.prepareStatement(sql)) {
+//            stmt.setInt(1, id);
+//            stmt.executeUpdate();
+//            return true;
+//        } catch (SQLException e) {
+//            System.out.println("Error al eliminar producto: " + e.getMessage());
+//            return false;
+// }
+//    }
+//}
 package repositorio;
 
 import conexion.ConexionOracle;
 import modelo.Producto;
+import oracle.jdbc.OracleTypes;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,15 +95,15 @@ import java.util.List;
 public class ProductoRepositorio {
 
     public boolean agregarProducto(Producto p) {
-        String sql = "INSERT INTO productos (nombre, tipo, precio, descripcion, id_receta) VALUES (?, ?, ?, ?, ?)";
+        String sql = "{call agregar_producto(?, ?, ?, ?, ?)}";
         try (Connection conn = ConexionOracle.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             CallableStatement stmt = conn.prepareCall(sql)) {
             stmt.setString(1, p.getNombre());
             stmt.setString(2, p.getTipo());
             stmt.setDouble(3, p.getPrecio());
             stmt.setString(4, p.getDescripcion());
             stmt.setInt(5, p.getIdReceta());
-            stmt.executeUpdate();
+            stmt.execute();
             return true;
         } catch (SQLException e) {
             System.out.println("Error al agregar producto: " + e.getMessage());
@@ -27,58 +112,58 @@ public class ProductoRepositorio {
     }
 
     public List<Producto> listarProductos() {
-    List<Producto> lista = new ArrayList<>();
-    String sql = "SELECT * FROM productos";
-    try (Connection conn = ConexionOracle.conectar();
-         Statement stmt = conn.createStatement();
-         ResultSet rs = stmt.executeQuery(sql)) {
-        while (rs.next()) {
-            Producto p = new Producto(
-                rs.getInt("id_producto"),
-                rs.getString("nombre"),
-                rs.getString("tipo"),
-                rs.getDouble("precio"),
-                rs.getString("descripcion"),
-                rs.getInt("id_receta")
-            );
-            lista.add(p);
+        List<Producto> lista = new ArrayList<>();
+        String sql = "{? = call listar_productos()}";
+        try (Connection conn = ConexionOracle.conectar();
+             CallableStatement stmt = conn.prepareCall(sql)) {
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+            ResultSet rs = (ResultSet) stmt.getObject(1);
+            while (rs.next()) {
+                Producto p = new Producto(
+                    rs.getInt("id_producto"),
+                    rs.getString("nombre"),
+                    rs.getString("tipo"),
+                    rs.getDouble("precio"),
+                    rs.getString("descripcion"),
+                    rs.getInt("id_receta")
+                );
+                lista.add(p);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al listar productos: " + e.getMessage());
         }
-    } catch (SQLException e) {
-        System.out.println("Error al listar productos: " + e.getMessage());
+        return lista;
     }
-    return lista;
-}
 
-
-   public boolean actualizarProducto(Producto p) {
-    String sql = "UPDATE productos SET nombre = ?, tipo = ?, precio = ?, descripcion = ?, id_receta = ? WHERE id_producto = ?";
-    try (Connection conn = ConexionOracle.conectar();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setString(1, p.getNombre());
-        stmt.setString(2, p.getTipo());
-        stmt.setDouble(3, p.getPrecio());
-        stmt.setString(4, p.getDescripcion());
-        stmt.setInt(5, p.getIdReceta());
-        stmt.setInt(6, p.getIdProducto());
-        stmt.executeUpdate();
-        return true;
-    } catch (SQLException e) {
-        System.out.println("Error al actualizar producto: " + e.getMessage());
-        return false;
+    public boolean actualizarProducto(Producto p) {
+        String sql = "{call actualizar_producto(?, ?, ?, ?, ?, ?)}";
+        try (Connection conn = ConexionOracle.conectar();
+             CallableStatement stmt = conn.prepareCall(sql)) {
+            stmt.setInt(1, p.getIdProducto());
+            stmt.setString(2, p.getNombre());
+            stmt.setString(3, p.getTipo());
+            stmt.setDouble(4, p.getPrecio());
+            stmt.setString(5, p.getDescripcion());
+            stmt.setInt(6, p.getIdReceta());
+            stmt.execute();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar producto: " + e.getMessage());
+            return false;
+        }
     }
-}
-
 
     public boolean eliminarProducto(int id) {
-        String sql = "DELETE FROM productos WHERE id_producto = ?";
+        String sql = "{call eliminar_producto(?)}";
         try (Connection conn = ConexionOracle.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             CallableStatement stmt = conn.prepareCall(sql)) {
             stmt.setInt(1, id);
-            stmt.executeUpdate();
+            stmt.execute();
             return true;
         } catch (SQLException e) {
             System.out.println("Error al eliminar producto: " + e.getMessage());
             return false;
- }
+        }
     }
 }

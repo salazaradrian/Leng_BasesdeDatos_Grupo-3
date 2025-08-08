@@ -1,13 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package JFrame;
 
-/**
- *
- * @author PC
- */
+
 
 import modelo.Empleado;
 import repositorio.EmpleadoRepositorio;
@@ -41,8 +34,8 @@ public EmpleadoFrame() {
         addLabel("Nombre:", 20, 60);
         addLabel("Primer Apellido:", 20, 100);
         addLabel("Segundo Apellido:", 20, 140);
-        addLabel("salario:", 20, 180);
-        addLabel("cargo:", 20, 220);
+        addLabel("Salario:", 20, 180);
+        addLabel("Cargo:", 20, 220);
        
 
         // Campos de texto
@@ -178,8 +171,8 @@ public EmpleadoFrame() {
             txtNombre.setText(tablaEmpleados.getValueAt(fila, 1).toString());
             txtPrimerApellido.setText(tablaEmpleados.getValueAt(fila, 2).toString());
             txtSegundoApellido.setText(tablaEmpleados.getValueAt(fila, 3).toString());
-            txtsalario.setText(tablaEmpleados.getValueAt(fila, 2).toString());
-            txtcargo.setText(tablaEmpleados.getValueAt(fila, 4).toString());
+            txtsalario.setText(tablaEmpleados.getValueAt(fila, 4).toString());
+            txtcargo.setText(tablaEmpleados.getValueAt(fila, 5).toString());
 
         }
     }

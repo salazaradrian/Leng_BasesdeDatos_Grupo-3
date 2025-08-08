@@ -110,7 +110,7 @@ import modelo.Cliente;
 
 public class ClienteRepositorio {
 
-    // Agregar cliente usando procedimiento almacenado
+    
     public boolean agregarCliente(Cliente cliente) {
         String sql = "{call agregar_cliente(?, ?, ?, ?, ?, ?)}";
         try (Connection conn = ConexionOracle.conectar();
@@ -132,7 +132,7 @@ public class ClienteRepositorio {
         }
     }
 
-    // Listar clientes usando función que retorna cursor
+   
     public List<Cliente> listarClientes() {
         List<Cliente> lista = new ArrayList<>();
         String sql = "{? = call listar_clientes()}";
@@ -163,7 +163,7 @@ public class ClienteRepositorio {
         return lista;
     }
 
-    // Actualizar cliente usando procedimiento almacenado
+   
     public boolean actualizarCliente(Cliente cliente) {
         String sql = "{call actualizar_cliente(?, ?, ?, ?, ?, ?, ?)}";
         try (Connection conn = ConexionOracle.conectar();
@@ -186,7 +186,7 @@ public class ClienteRepositorio {
         }
     }
 
-    // Eliminar cliente usando procedimiento almacenado
+   
     public boolean eliminarCliente(int idCliente) {
         String sql = "{call eliminar_cliente(?)}";
         try (Connection conn = ConexionOracle.conectar();

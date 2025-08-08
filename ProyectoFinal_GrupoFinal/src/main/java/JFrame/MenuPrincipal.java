@@ -1,10 +1,12 @@
+package JFrame;
+
 import JFrame.ClienteFrame;
 import JFrame.FacturaFrame;
 import JFrame.EmpleadoFrame;
 import JFrame.ProductoFrame;
 import JFrame.VentasFrame;
 import JFrame.RecetasFrame;
-
+import JFrame.IngredienteFrame;
 
 
 import javax.swing.*;

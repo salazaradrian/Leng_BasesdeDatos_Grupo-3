@@ -93,7 +93,7 @@ package repositorio;
 //        }
 //    }
 //}
-// 
+ 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +103,7 @@ import conexion.ConexionOracle;
 
 public class EmpleadoRepositorio {
 
-    // Agregar empleado usando paquete
+    
     public boolean agregarEmpleado(Empleado empleado) {
         String sql = "{call agregar_empleado(?, ?, ?, ?, ?)}";
         try (Connection conn = ConexionOracle.conectar();
@@ -124,7 +124,7 @@ public class EmpleadoRepositorio {
         }
     }
 
-    // Listar empleados usando función del paquete
+    
     public List<Empleado> listarEmpleados() {
         List<Empleado> lista = new ArrayList<>();
         String sql = "{? = call listar_empleados()}";
@@ -154,7 +154,7 @@ public class EmpleadoRepositorio {
         return lista;
     }
 
-    // Actualizar empleado usando paquete
+    
     public boolean actualizarEmpleado(Empleado empleado) {
         String sql = "{call actualizar_empleado(?, ?, ?, ?, ?, ?)}";
         try (Connection conn = ConexionOracle.conectar();
@@ -176,7 +176,7 @@ public class EmpleadoRepositorio {
         }
     }
 
-    // Eliminar empleado usando paquete
+    
     public boolean eliminarEmpleado(int idEmpleado) {
         String sql = "{call eliminar_empleado(?)}";
         try (Connection conn = ConexionOracle.conectar();

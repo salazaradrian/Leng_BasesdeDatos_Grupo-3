@@ -1,3 +1,5 @@
+package JFrame;
+
 import modelo.Ingrediente;
 import repositorio.IngredienteRepositorio;
 
