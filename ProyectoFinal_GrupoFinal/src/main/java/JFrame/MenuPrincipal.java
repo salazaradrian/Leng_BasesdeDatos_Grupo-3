@@ -30,7 +30,7 @@ public class MenuPrincipal extends JFrame {
         JPanel panelBotones = new JPanel();
         panelBotones.setOpaque(false);
         panelBotones.setLayout(new GridLayout(9, 1, 10, 10));
-        panelBotones.setBounds(150, 100, 300, 450); // Centrado en la ventana
+        panelBotones.setBounds(150, 100, 300, 450); 
 
         // Botones
         JButton btnClientes = new JButton("Gestión de Clientes");
