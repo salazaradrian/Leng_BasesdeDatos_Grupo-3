@@ -22,19 +22,19 @@ END;
 
 ---2---
 
-CREATE OR REPLACE TRIGGER trg_facturas_calc_totales
-BEFORE INSERT OR UPDATE OF id_ventas, subtotal, impuesto ON facturas
+
+CREATE OR REPLACE TRIGGER trg_factura_calc_totales
+BEFORE INSERT OR UPDATE OF id_ventas, subtotal, impuesto ON factura
 FOR EACH ROW
 DECLARE
   v_subtotal ventas.monto_total%TYPE;
   c_iva CONSTANT NUMBER := 0.13; 
 BEGIN
-  
+
   IF :NEW.fecha IS NULL THEN
     :NEW.fecha := SYSDATE;
   END IF;
-
-
+e
   IF :NEW.subtotal IS NULL OR INSERTING THEN
     SELECT monto_total
       INTO v_subtotal
@@ -44,20 +44,14 @@ BEGIN
     :NEW.subtotal := NVL(v_subtotal, 0);
   END IF;
 
+  :NEW.impuesto := ROUND(NVL(:NEW.subtotal,0) * c_iva, 2);
 
-  :NEW.impuesto := ROUND(:NEW.subtotal * c_iva, 2);
-  :NEW.total    := ROUND(:NEW.subtotal + :NEW.impuesto, 2);
-
-
-  IF INSERTING AND :NEW.id_estado IS NULL THEN
-    :NEW.id_estado := 1;
 EXCEPTION
   WHEN NO_DATA_FOUND THEN
-
-    RAISE_APPLICATION_ERROR(-20001, 'No existe la venta con ID ' || :NEW.id_ventas);
+    RAISE_APPLICATION_ERROR(-20001, 'No existe la venta con ID ' || :NEW.id_ventas || ' en VENTAS.');
 END;
 /
 
-
  
+
 
