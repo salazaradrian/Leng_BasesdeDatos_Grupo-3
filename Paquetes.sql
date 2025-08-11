@@ -1,34 +1,30 @@
 
-------Paquetes de Productos------- 
-
-
 CREATE OR REPLACE PACKAGE pkg_productos AS
   PROCEDURE agregar_producto(
     p_nombre      IN productos.nombre%TYPE,
     p_tipo        IN productos.tipo%TYPE,
     p_precio      IN productos.precio%TYPE,
     p_descripcion IN productos.descripcion%TYPE,
-    p_id_receta   IN productos.id_receta%TYPE,
-    p_cantidad    IN productos.cantidad%TYPE DEFAULT 0
+    p_id_receta   IN productos.id_receta%TYPE
   );
 
-  FUNCTION listar_productos RETURN SYS_REFCURSOR;
-
   PROCEDURE actualizar_producto(
-    p_id_producto IN productos.id_producto%TYPE,
-    p_nombre      IN productos.nombre%TYPE,
-    p_tipo        IN productos.tipo%TYPE,
-    p_precio      IN productos.precio%TYPE,
-    p_descripcion IN productos.descripcion%TYPE,
-    p_id_receta   IN productos.id_receta%TYPE,
-    p_cantidad    IN productos.cantidad%TYPE
+    p_id_producto  IN productos.id_producto%TYPE,
+    p_nombre       IN productos.nombre%TYPE,
+    p_tipo         IN productos.tipo%TYPE,
+    p_precio       IN productos.precio%TYPE,
+    p_descripcion  IN productos.descripcion%TYPE,
+    p_id_receta    IN productos.id_receta%TYPE
   );
 
   PROCEDURE eliminar_producto(
     p_id_producto IN productos.id_producto%TYPE
   );
+
+  FUNCTION listar_productos RETURN SYS_REFCURSOR;
 END pkg_productos;
 /
+
 
 ---Cuerpo del paquete de productos
 
@@ -39,53 +35,50 @@ CREATE OR REPLACE PACKAGE BODY pkg_productos AS
     p_tipo        IN productos.tipo%TYPE,
     p_precio      IN productos.precio%TYPE,
     p_descripcion IN productos.descripcion%TYPE,
-    p_id_receta   IN productos.id_receta%TYPE,
-    p_cantidad    IN productos.cantidad%TYPE
+    p_id_receta   IN productos.id_receta%TYPE
   ) AS
   BEGIN
-    INSERT INTO productos (nombre, tipo, precio, descripcion, id_receta, cantidad)
-    VALUES (p_nombre, p_tipo, p_precio, p_descripcion, p_id_receta, NVL(p_cantidad,0));
+    INSERT INTO productos (nombre, tipo, precio, descripcion, id_receta)
+    VALUES (p_nombre, p_tipo, p_precio, p_descripcion, p_id_receta);
   END agregar_producto;
 
-  FUNCTION listar_productos RETURN SYS_REFCURSOR AS
-    v_cur SYS_REFCURSOR;
-  BEGIN
-    OPEN v_cur FOR
-      SELECT id_producto, nombre, tipo, precio, descripcion, id_receta, cantidad
-        FROM productos;
-    RETURN v_cur;
-  END listar_productos;
-
   PROCEDURE actualizar_producto(
-    p_id_producto IN productos.id_producto%TYPE,
-    p_nombre      IN productos.nombre%TYPE,
-    p_tipo        IN productos.tipo%TYPE,
-    p_precio      IN productos.precio%TYPE,
-    p_descripcion IN productos.descripcion%TYPE,
-    p_id_receta   IN productos.id_receta%TYPE,
-    p_cantidad    IN productos.cantidad%TYPE
+    p_id_producto  IN productos.id_producto%TYPE,
+    p_nombre       IN productos.nombre%TYPE,
+    p_tipo         IN productos.tipo%TYPE,
+    p_precio       IN productos.precio%TYPE,
+    p_descripcion  IN productos.descripcion%TYPE,
+    p_id_receta    IN productos.id_receta%TYPE
   ) AS
   BEGIN
     UPDATE productos
-       SET nombre      = p_nombre,
-           tipo        = p_tipo,
-           precio      = p_precio,
-           descripcion = p_descripcion,
-           id_receta   = p_id_receta,
-           cantidad    = NVL(p_cantidad, cantidad)
-     WHERE id_producto = p_id_producto;
+    SET nombre = p_nombre,
+        tipo = p_tipo,
+        precio = p_precio,
+        descripcion = p_descripcion,
+        id_receta = p_id_receta
+    WHERE id_producto = p_id_producto;
   END actualizar_producto;
 
   PROCEDURE eliminar_producto(
     p_id_producto IN productos.id_producto%TYPE
   ) AS
   BEGIN
-    DELETE FROM productos
-     WHERE id_producto = p_id_producto;
+    DELETE FROM productos WHERE id_producto = p_id_producto;
   END eliminar_producto;
+
+  FUNCTION listar_productos RETURN SYS_REFCURSOR AS
+    productos_cursor SYS_REFCURSOR;
+  BEGIN
+    OPEN productos_cursor FOR
+    SELECT id_producto, nombre, tipo, precio, descripcion, id_receta
+    FROM productos;
+    RETURN productos_cursor;
+  END listar_productos;
 
 END pkg_productos;
 /
+
 
 
 
@@ -418,6 +411,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_factura AS
 
 END pkg_factura;
 /
+
 
 
 
