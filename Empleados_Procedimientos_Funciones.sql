@@ -17,7 +17,8 @@ RETURN SYS_REFCURSOR AS
 BEGIN
     OPEN empleados_cursor FOR
     SELECT id_empleado, nombre, primer_apellido, segundo_apellido, salario, cargo
-    FROM empleados;
+    FROM empleados
+    ORDER BY id_empleado ASC;
     RETURN empleados_cursor;
 END;
 /

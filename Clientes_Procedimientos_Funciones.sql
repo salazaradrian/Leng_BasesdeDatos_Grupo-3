@@ -18,7 +18,8 @@ RETURN SYS_REFCURSOR AS
 BEGIN
     OPEN clientes_cursor FOR
     SELECT id_cliente, nombre, primer_apellido, segundo_apellido, telefono, email, direccion
-    FROM clientes;
+    FROM clientes
+    ORDER BY id_cliente ASC;
     RETURN clientes_cursor;
 END;
 /
