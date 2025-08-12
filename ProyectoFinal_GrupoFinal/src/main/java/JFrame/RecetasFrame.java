@@ -33,7 +33,7 @@ public class RecetasFrame extends JFrame {
         nombreField.setBounds(10, 35, 310, 25);
         add(nombreField);
 
-        guardarButton = new JButton("Guardar");
+        guardarButton = new JButton("Agregar");
         guardarButton.setBounds(400, 30, 150, 25);
         add(guardarButton);
         
@@ -63,7 +63,7 @@ public class RecetasFrame extends JFrame {
 
         guardarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                guardarReceta();
+                agregarReceta();
             }
         });
         
@@ -113,26 +113,25 @@ public class RecetasFrame extends JFrame {
         }
     }
     
-    private void guardarReceta() {
-        String nombreReceta = nombreField.getText().trim();
-        if (nombreReceta.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío.");
-            return;
-        }
-
-        try (Connection conn = ConexionOracle.conectar();
-             PreparedStatement ps = conn.prepareStatement("INSERT INTO recetas (nombre) VALUES (?)")) {
-
-            ps.setString(1, nombreReceta);
-            ps.executeUpdate();
-
-            JOptionPane.showMessageDialog(this, "Receta guardada correctamente.");
-            nombreField.setText("");
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al guardar receta: " + e.getMessage());
-        }
+    private void agregarReceta() {
+    String nombreReceta = nombreField.getText().trim();
+    if (nombreReceta.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío.");
+        return;
     }
+
+    Receta receta = new Receta();
+    receta.setNombre(nombreReceta);
+
+    if (recetasRepo.agregarReceta(receta)) {
+        JOptionPane.showMessageDialog(this, "Receta guardada correctamente.");
+        nombreField.setText("");
+        cargarRecetas();
+    } else {
+        JOptionPane.showMessageDialog(this, "Error al guardar receta.");
+    }
+}
+
     
     private void cargarRecetaDesdeTabla() {
         int fila = tablaRecetas.getSelectedRow();
