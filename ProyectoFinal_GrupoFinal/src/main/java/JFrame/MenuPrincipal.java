@@ -7,7 +7,7 @@ import JFrame.ProductoFrame;
 import JFrame.VentasFrame;
 import JFrame.RecetasFrame;
 import JFrame.IngredienteFrame;
-
+import JFrame.AuditoriaFrame;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -29,7 +29,7 @@ public class MenuPrincipal extends JFrame {
         // Panel transparente para los botones
         JPanel panelBotones = new JPanel();
         panelBotones.setOpaque(false);
-        panelBotones.setLayout(new GridLayout(9, 1, 10, 10));
+        panelBotones.setLayout(new GridLayout(10, 1, 10, 10));
         panelBotones.setBounds(150, 100, 300, 450); 
 
         // Botones
@@ -41,6 +41,7 @@ public class MenuPrincipal extends JFrame {
         JButton btnCompras = new JButton("Gestión de Compras");
         JButton btnVentas = new JButton("Gestión de Ventas");
         JButton btnFacturas = new JButton("Gestión de Facturas");
+        JButton btnAuditoria = new JButton("Gestión de Auditorias");
         JButton btnSalir = new JButton("Salir");
 
         // Acciones
@@ -52,6 +53,7 @@ public class MenuPrincipal extends JFrame {
         btnCompras.addActionListener((ActionEvent e) -> new ComprasFrame().setVisible(true));
         btnVentas.addActionListener((ActionEvent e) -> new VentasFrame().setVisible(true));
         btnFacturas.addActionListener((ActionEvent e) -> new FacturaFrame().setVisible(true));
+        btnAuditoria.addActionListener((ActionEvent e) -> new AuditoriaFrame().setVisible(true));
         btnSalir.addActionListener((ActionEvent e) -> System.exit(0));
 
         // Agregar botones al panel
@@ -63,6 +65,7 @@ public class MenuPrincipal extends JFrame {
         panelBotones.add(btnCompras);
         panelBotones.add(btnVentas);
         panelBotones.add(btnFacturas);
+        panelBotones.add(btnAuditoria);
         panelBotones.add(btnSalir);
 
         // componentes
