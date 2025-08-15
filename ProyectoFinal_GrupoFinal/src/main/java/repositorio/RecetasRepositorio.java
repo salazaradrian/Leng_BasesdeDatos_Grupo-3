@@ -13,7 +13,7 @@ public class RecetasRepositorio {
     // Obtener recetas
     public List<String> obtenerRecetas() {      //metodo que devuelve una lista de strings
         List<String> recetas = new ArrayList<>(); // se crea una lista vacia - aqui se guardaran los resultados
-        String sql = "{? = call obtener_recetas()}";  //aqui se define la llamada al P.A . "?" representa el paramtro de salida(el cursor que devuelve el P.A)
+        String sql = "{? = call pkg_recetas.obtener_recetas()}";  //aqui se define la llamada al P.A . "?" representa el paramtro de salida(el cursor que devuelve el P.A)
 
         try (Connection conn = ConexionOracle.conectar();       //conexion a la BD
              CallableStatement stmt = conn.prepareCall(sql)) {
@@ -37,7 +37,7 @@ public class RecetasRepositorio {
 
     // Agregar receta
     public boolean agregarReceta(Receta receta) {   //Define un método público que devuelve true o false según si la receta se pudo agregar correctamente.
-        String sql = "{call agregar_receta(?)}";   //Define la llamada al procedimiento almacenado agregar_receta, que espera un parámetro de entrada (el nombre de la receta).
+        String sql = "{call pkg_recetas.agregar_receta(?)}";   //Define la llamada al procedimiento almacenado agregar_receta, que espera un parámetro de entrada (el nombre de la receta).
 
         try (Connection conn = ConexionOracle.conectar();   //conexion a la BD
              CallableStatement stmt = conn.prepareCall(sql)) {
@@ -55,7 +55,7 @@ public class RecetasRepositorio {
     // Listar recetas
     public List<Receta> listarRecetas() {  //método público que devuelve una lista de objetos Receta.
         List<Receta> lista = new ArrayList<>();  //lista vacía llamada lista donde se guardarán las recetas obtenidas.
-        String sql = "{? = call listar_recetas()}"; //Define la llamada al P.A listar_recetas(), que devuelve un cursor como parámetro de salida.
+        String sql = "{? = call pkg_recetas.listar_recetas()}"; //Define la llamada al P.A listar_recetas(), que devuelve un cursor como parámetro de salida.
 
         try (Connection conn = ConexionOracle.conectar();  //CONEXION A LA BD
              CallableStatement stmt = conn.prepareCall(sql)) {
@@ -80,7 +80,7 @@ public class RecetasRepositorio {
 
     // Actualizar receta
     public boolean actualizarReceta(Receta receta) { //Recibe como parámetro un objeto Receta que contiene el ID y el nuevo nombre.
-        String sql = "{call actualizar_receta(?, ?)}"; //Define la llamada al procedimiento almacenado actualizar_receta, 
+        String sql = "{call pkg_recetas.actualizar_receta(?, ?)}"; //Define la llamada al procedimiento almacenado actualizar_receta, 
 
         try (Connection conn = ConexionOracle.conectar();  //conexion a la BD
              CallableStatement stmt = conn.prepareCall(sql)) {
@@ -98,7 +98,7 @@ public class RecetasRepositorio {
 
     // Eliminar receta
     public boolean eliminarReceta(int idReceta) {
-        String sql = "{call eliminar_receta(?)}";   //EJECUCION DEL P.A 
+        String sql = "{call pkg_recetas.eliminar_receta(?)}";   //EJECUCION DEL P.A 
 
         try (Connection conn = ConexionOracle.conectar();  //SE ESTABLECE CONEXION
              CallableStatement stmt = conn.prepareCall(sql)) {  //SE PREPRAPRA LA LLAMDA
@@ -113,3 +113,4 @@ public class RecetasRepositorio {
         }
     }
 }
+
