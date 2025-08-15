@@ -11,7 +11,8 @@ import oracle.jdbc.OracleTypes;
 public class ComprasRepositorio {
 
     public boolean agregarCompra(Compras compra) {
-        String sql = "{call agregar_compra(?,?,?)}";
+      //  String sql = "{call agregar_compra(?,?,?)}";
+        String sql = "{call pkg_compras.agregar_compra(?,?,?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -32,8 +33,9 @@ public class ComprasRepositorio {
     // Listar compras
     public List<Compras> listarCompras() {
         List<Compras> lista = new ArrayList<>();
-        String sql = "{? = call listar_compras()}";
-
+        //String sql = "{? = call listar_compras()}";
+        String sql = "{? = call pkg_compras.listar_compras()}";
+        
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -61,7 +63,9 @@ public class ComprasRepositorio {
 
     // Eliminar compra
     public boolean eliminarCompra(int idCompra) {
-        String sql = "{call eliminar_compra(?)}"; 
+        //String sql = "{call eliminar_compra(?)}";
+        String sql = "{call pkg_compras.eliminar_compra(?)}";
+        
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -75,3 +79,4 @@ public class ComprasRepositorio {
         }
     }
 }
+
