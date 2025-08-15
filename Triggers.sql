@@ -8,7 +8,7 @@ CREATE TABLE auditoria_clientes (
 );
 
 CREATE OR REPLACE TRIGGER trg_auditoria_clientes_insert
-AFTER INSERT OR UPDATE OR DELETE ON clientes
+AFTER INSERT ON clientes
 FOR EACH ROW
 BEGIN
     IF INSERTING THEN
@@ -17,25 +17,26 @@ BEGIN
   END IF;
 END;
 /
+    
 CREATE OR REPLACE TRIGGER trg_auditoria_clientes_update
-AFTER INSERT OR UPDATE OR DELETE ON clientes
+AFTER UPDATE ON clientes
 FOR EACH ROW
 BEGIN
-    IF INSERTING THEN
+    IF UPDATING THEN
         INSERT INTO auditoria_clientes (id_cliente, accion, usuario, fecha_accion, datos_antiguos)
         VALUES (:OLD.id_cliente, 'UPDATE', USER, SYSDATE,
-                'Nombre anterior: ' || :OLD.nombre || ', Teléfono anterior: ' || :OLD.telefono);
+                'Nombre anterior: ' || :OLD.nombre || ', TelÃ©fono anterior: ' || :OLD.telefono);
   END IF;
 END;
 /
 CREATE OR REPLACE TRIGGER trg_auditoria_clientes_delete
-AFTER INSERT OR UPDATE OR DELETE ON clientes
+AFTER DELETE ON clientes
 FOR EACH ROW
 BEGIN
-    IF INSERTING THEN
+    IF DELETING THEN
         INSERT INTO auditoria_clientes (id_cliente, accion, usuario, fecha_accion, datos_antiguos)
         VALUES (:OLD.id_cliente, 'DELETE', USER, SYSDATE,
-                'Nombre: ' || :OLD.nombre || ', Teléfono: ' || :OLD.telefono);
+                'Nombre: ' || :OLD.nombre || ', TelÃ©fono: ' || :OLD.telefono);
     END IF;
 END;
 /
