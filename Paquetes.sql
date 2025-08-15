@@ -1,26 +1,15 @@
 CREATE OR REPLACE PACKAGE pkg_compras AS
-  PROCEDURE agregar_compra(p_id_ingrediente NUMBER, p_fecha DATE, p_cantidad NUMBER, p_monto NUMBER);
-  PROCEDURE actualizar_compra(p_id_compra NUMBER, p_id_ingrediente NUMBER, p_fecha DATE, p_cantidad NUMBER, p_monto NUMBER);
+  PROCEDURE agregar_compra(p_id_ingrediente NUMBER, p_cantidad NUMBER, p_monto NUMBER);
   PROCEDURE eliminar_compra(p_id_compra NUMBER);
   FUNCTION listar_compras RETURN SYS_REFCURSOR;
 END pkg_compras;
 /
 
 CREATE OR REPLACE PACKAGE BODY pkg_compras AS
-  PROCEDURE agregar_compra(p_id_ingrediente NUMBER, p_fecha DATE, p_cantidad NUMBER, p_monto NUMBER) AS
+  PROCEDURE agregar_compra(p_id_ingrediente NUMBER, p_cantidad NUMBER, p_monto NUMBER) AS
   BEGIN
-    INSERT INTO compras (id_ingrediente, fecha, cantidad_ingredientes, monto_total)
+    INSERT INTO compras (id_ingrediente, cantidad_ingredientes, monto_total)
     VALUES (p_id_ingrediente, p_fecha, p_cantidad, p_monto);
-  END;
-
-  PROCEDURE actualizar_compra(p_id_compra NUMBER, p_id_ingrediente NUMBER, p_fecha DATE, p_cantidad NUMBER, p_monto NUMBER) AS
-  BEGIN
-    UPDATE compras
-    SET id_ingrediente = p_id_ingrediente,
-        fecha = p_fecha,
-        cantidad_ingredientes = p_cantidad,
-        monto_total = p_monto
-    WHERE id_compra = p_id_compra;
   END;
 
   PROCEDURE eliminar_compra(p_id_compra NUMBER) AS
@@ -188,7 +177,7 @@ CREATE OR REPLACE PACKAGE pkg_gestion_facturas AS
     estado_pendiente CONSTANT VARCHAR2(15) := 'Pendiente';
     estado_anulada   CONSTANT VARCHAR2(15) := 'Anulada';
 
-    -- Cursor para ver detalle de una factura específica
+    -- Cursor para ver detalle de una factura especÃ­fica
     CURSOR cur_detalle_factura(p_id_factura NUMBER) IS
         SELECT f.id_factura,
                f.fecha,
@@ -206,7 +195,7 @@ CREATE OR REPLACE PACKAGE pkg_gestion_facturas AS
     FUNCTION obtener_total_factura(p_id_factura NUMBER)
     RETURN NUMBER;
 
-    -- Obtener el total facturado a un cliente en un año específico
+    -- Obtener el total facturado a un cliente en un aÃ±o especÃ­fico
     FUNCTION total_cliente_anual(p_id_cliente NUMBER, p_year NUMBER)
     RETURN NUMBER;
 END pkg_gestion_facturas;
