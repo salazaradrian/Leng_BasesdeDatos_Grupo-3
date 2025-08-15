@@ -29,7 +29,7 @@ public class IngredienteRepositorio {
 
     //Agregar ingrediente usando stored procedure
     public boolean agregarIngrediente(Ingrediente ingrediente) {
-        String sql = "{call agregar_ingrediente(?,?)}";
+        String sql = "{call pkg_ingredientes.agregar_ingrediente(?,?)}";
         try (Connection conn = ConexionOracle.conectar(); CallableStatement cs = conn.prepareCall(sql)) {
 
             cs.setString(1, ingrediente.getNombre());
@@ -72,7 +72,7 @@ public class IngredienteRepositorio {
     // Listar todos los ingredientes
     public List<Ingrediente> listarIngredientes() {
         List<Ingrediente> lista = new ArrayList<>();
-        String sql = "{? = call listar_ingredientes()}";
+        String sql = "{? = call pkg_ingredientes.listar_ingredientes()}";
 
         try (Connection conn = ConexionOracle.conectar(); CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -116,7 +116,7 @@ public class IngredienteRepositorio {
 
     // Actualizar ingrediente
     public boolean actualizarIngrediente(Ingrediente ingrediente) {
-        String sql = "{call actualizar_ingrediente (?,?)}";
+        String sql = "{call pkg_ingredientes.actualizar_ingrediente (?,?)}";
            try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -150,7 +150,7 @@ public class IngredienteRepositorio {
     
       // Eliminar ingrediente usando procedimiento almacenado
     public boolean eliminarIngrediente(int idIngrediente) {
-        String sql = "{call eliminar_ingrediente(?)}";
+        String sql = "{call pkg_ingredientes.eliminar_ingrediente(?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -165,3 +165,4 @@ public class IngredienteRepositorio {
     }
     
 }
+
