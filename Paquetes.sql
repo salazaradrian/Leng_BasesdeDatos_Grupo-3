@@ -1,422 +1,251 @@
+CREATE OR REPLACE PACKAGE pkg_compras AS
+  PROCEDURE agregar_compra(p_id_ingrediente NUMBER, p_fecha DATE, p_cantidad NUMBER, p_monto NUMBER);
+  PROCEDURE actualizar_compra(p_id_compra NUMBER, p_id_ingrediente NUMBER, p_fecha DATE, p_cantidad NUMBER, p_monto NUMBER);
+  PROCEDURE eliminar_compra(p_id_compra NUMBER);
+  FUNCTION listar_compras RETURN SYS_REFCURSOR;
+END pkg_compras;
+/
 
-CREATE OR REPLACE PACKAGE pkg_productos AS
-  PROCEDURE agregar_producto(
-    p_nombre      IN productos.nombre%TYPE,
-    p_tipo        IN productos.tipo%TYPE,
-    p_precio      IN productos.precio%TYPE,
-    p_descripcion IN productos.descripcion%TYPE,
-    p_id_receta   IN productos.id_receta%TYPE
-  );
+CREATE OR REPLACE PACKAGE BODY pkg_compras AS
+  PROCEDURE agregar_compra(p_id_ingrediente NUMBER, p_fecha DATE, p_cantidad NUMBER, p_monto NUMBER) AS
+  BEGIN
+    INSERT INTO compras (id_ingrediente, fecha, cantidad_ingredientes, monto_total)
+    VALUES (p_id_ingrediente, p_fecha, p_cantidad, p_monto);
+  END;
 
-  PROCEDURE actualizar_producto(
-    p_id_producto  IN productos.id_producto%TYPE,
-    p_nombre       IN productos.nombre%TYPE,
-    p_tipo         IN productos.tipo%TYPE,
-    p_precio       IN productos.precio%TYPE,
-    p_descripcion  IN productos.descripcion%TYPE,
-    p_id_receta    IN productos.id_receta%TYPE
-  );
+  PROCEDURE actualizar_compra(p_id_compra NUMBER, p_id_ingrediente NUMBER, p_fecha DATE, p_cantidad NUMBER, p_monto NUMBER) AS
+  BEGIN
+    UPDATE compras
+    SET id_ingrediente = p_id_ingrediente,
+        fecha = p_fecha,
+        cantidad_ingredientes = p_cantidad,
+        monto_total = p_monto
+    WHERE id_compra = p_id_compra;
+  END;
 
-  PROCEDURE eliminar_producto(
-    p_id_producto IN productos.id_producto%TYPE
-  );
+  PROCEDURE eliminar_compra(p_id_compra NUMBER) AS
+  BEGIN
+    DELETE FROM compras WHERE id_compra = p_id_compra;
+  END;
 
-  FUNCTION listar_productos RETURN SYS_REFCURSOR;
-END pkg_productos;
+  FUNCTION listar_compras RETURN SYS_REFCURSOR AS
+    v_cur SYS_REFCURSOR;
+  BEGIN
+    OPEN v_cur FOR SELECT * FROM compras;
+    RETURN v_cur;
+  END;
+END pkg_compras;
 /
 
 
----Cuerpo del paquete de productos
+CREATE OR REPLACE PACKAGE pkg_recetas AS
+  PROCEDURE agregar_receta(p_nombre VARCHAR2);
+  PROCEDURE actualizar_receta(p_id_receta NUMBER, p_nombre VARCHAR2);
+  PROCEDURE eliminar_receta(p_id_receta NUMBER);
+  FUNCTION listar_recetas RETURN SYS_REFCURSOR;
+END pkg_recetas;
+/
 
-CREATE OR REPLACE PACKAGE BODY pkg_productos AS
-
-  PROCEDURE agregar_producto(
-    p_nombre      IN productos.nombre%TYPE,
-    p_tipo        IN productos.tipo%TYPE,
-    p_precio      IN productos.precio%TYPE,
-    p_descripcion IN productos.descripcion%TYPE,
-    p_id_receta   IN productos.id_receta%TYPE
-  ) AS
+CREATE OR REPLACE PACKAGE BODY pkg_recetas AS
+  PROCEDURE agregar_receta(p_nombre VARCHAR2) AS
   BEGIN
-    INSERT INTO productos (nombre, tipo, precio, descripcion, id_receta)
-    VALUES (p_nombre, p_tipo, p_precio, p_descripcion, p_id_receta);
-  END agregar_producto;
+    INSERT INTO recetas (nombre)
+    VALUES (p_nombre);
+  END;
 
-  PROCEDURE actualizar_producto(
-    p_id_producto  IN productos.id_producto%TYPE,
-    p_nombre       IN productos.nombre%TYPE,
-    p_tipo         IN productos.tipo%TYPE,
-    p_precio       IN productos.precio%TYPE,
-    p_descripcion  IN productos.descripcion%TYPE,
-    p_id_receta    IN productos.id_receta%TYPE
-  ) AS
+  PROCEDURE actualizar_receta(p_id_receta NUMBER, p_nombre VARCHAR2) AS
   BEGIN
-    UPDATE productos
+    UPDATE recetas
+    SET nombre = p_nombre
+    WHERE id_receta = p_id_receta;
+  END;
+
+  PROCEDURE eliminar_receta(p_id_receta NUMBER) AS
+  BEGIN
+    DELETE FROM recetas WHERE id_receta = p_id_receta;
+  END;
+
+  FUNCTION listar_recetas RETURN SYS_REFCURSOR AS
+    v_cur SYS_REFCURSOR;
+  BEGIN
+    OPEN v_cur FOR SELECT * FROM recetas;
+    RETURN v_cur;
+  END;
+END pkg_recetas;
+/
+
+
+CREATE OR REPLACE PACKAGE pkg_ingredientes AS
+  PROCEDURE agregar_ingrediente(p_nombre VARCHAR2, p_cantidad NUMBER, p_id_receta NUMBER);
+  PROCEDURE actualizar_ingrediente(p_id_ingrediente NUMBER, p_nombre VARCHAR2, p_cantidad NUMBER, p_id_receta NUMBER);
+  PROCEDURE eliminar_ingrediente(p_id_ingrediente NUMBER);
+  FUNCTION listar_ingredientes RETURN SYS_REFCURSOR;
+END pkg_ingredientes;
+/
+
+CREATE OR REPLACE PACKAGE BODY pkg_ingredientes AS
+  PROCEDURE agregar_ingrediente(p_nombre VARCHAR2, p_cantidad NUMBER, p_id_receta NUMBER) AS
+  BEGIN
+    INSERT INTO ingredientes (nombre, cantidad, id_receta)
+    VALUES (p_nombre, p_cantidad, p_id_receta);
+  END;
+
+  PROCEDURE actualizar_ingrediente(p_id_ingrediente NUMBER, p_nombre VARCHAR2, p_cantidad NUMBER, p_id_receta NUMBER) AS
+  BEGIN
+    UPDATE ingredientes
     SET nombre = p_nombre,
-        tipo = p_tipo,
-        precio = p_precio,
-        descripcion = p_descripcion,
+        cantidad = p_cantidad,
         id_receta = p_id_receta
-    WHERE id_producto = p_id_producto;
-  END actualizar_producto;
-
-  PROCEDURE eliminar_producto(
-    p_id_producto IN productos.id_producto%TYPE
-  ) AS
-  BEGIN
-    DELETE FROM productos WHERE id_producto = p_id_producto;
-  END eliminar_producto;
-
-  FUNCTION listar_productos RETURN SYS_REFCURSOR AS
-    productos_cursor SYS_REFCURSOR;
-  BEGIN
-    OPEN productos_cursor FOR
-    SELECT id_producto, nombre, tipo, precio, descripcion, id_receta
-    FROM productos;
-    RETURN productos_cursor;
-  END listar_productos;
-
-END pkg_productos;
-/
-
-
-
-
-
------Paquetes de clientes------
-
-CREATE OR REPLACE PACKAGE pkg_clientes AS
-  PROCEDURE agregar_cliente(
-    p_nombre           IN clientes.nombre%TYPE,
-    p_primer_apellido  IN clientes.primer_apellido%TYPE,
-    p_segundo_apellido IN clientes.segundo_apellido%TYPE,
-    p_telefono         IN clientes.telefono%TYPE,
-    p_email            IN clientes.email%TYPE,
-    p_direccion        IN clientes.direccion%TYPE
-  );
-
-  PROCEDURE actualizar_cliente(
-    p_id_cliente       IN clientes.id_cliente%TYPE,
-    p_nombre           IN clientes.nombre%TYPE,
-    p_primer_apellido  IN clientes.primer_apellido%TYPE,
-    p_segundo_apellido IN clientes.segundo_apellido%TYPE,
-    p_telefono         IN clientes.telefono%TYPE,
-    p_email            IN clientes.email%TYPE,
-    p_direccion        IN clientes.direccion%TYPE
-  );
-
-  PROCEDURE eliminar_cliente(p_id_cliente IN clientes.id_cliente%TYPE);
-
-  FUNCTION listar_clientes RETURN SYS_REFCURSOR;
-END pkg_clientes;
-/
-
-
----Cuerpo del paquete de clientes
-CREATE OR REPLACE PACKAGE BODY pkg_clientes AS
-  PROCEDURE agregar_cliente(
-    p_nombre           IN clientes.nombre%TYPE,
-    p_primer_apellido  IN clientes.primer_apellido%TYPE,
-    p_segundo_apellido IN clientes.segundo_apellido%TYPE,
-    p_telefono         IN clientes.telefono%TYPE,
-    p_email            IN clientes.email%TYPE,
-    p_direccion        IN clientes.direccion%TYPE
-  ) AS
-  BEGIN
-    INSERT INTO clientes (nombre, primer_apellido, segundo_apellido, telefono, email, direccion)
-    VALUES (p_nombre, p_primer_apellido, p_segundo_apellido, p_telefono, p_email, p_direccion);
-    COMMIT;
+    WHERE id_ingrediente = p_id_ingrediente;
   END;
 
-  PROCEDURE actualizar_cliente(
-    p_id_cliente       IN clientes.id_cliente%TYPE,
-    p_nombre           IN clientes.nombre%TYPE,
-    p_primer_apellido  IN clientes.primer_apellido%TYPE,
-    p_segundo_apellido IN clientes.segundo_apellido%TYPE,
-    p_telefono         IN clientes.telefono%TYPE,
-    p_email            IN clientes.email%TYPE,
-    p_direccion        IN clientes.direccion%TYPE
-  ) AS
+  PROCEDURE eliminar_ingrediente(p_id_ingrediente NUMBER) AS
   BEGIN
-    UPDATE clientes
-       SET nombre = p_nombre,
-           primer_apellido = p_primer_apellido,
-           segundo_apellido = p_segundo_apellido,
-           telefono = p_telefono,
-           email = p_email,
-           direccion = p_direccion
-     WHERE id_cliente = p_id_cliente;
-    COMMIT;
+    DELETE FROM ingredientes WHERE id_ingrediente = p_id_ingrediente;
   END;
 
-  PROCEDURE eliminar_cliente(p_id_cliente IN clientes.id_cliente%TYPE) AS
-  BEGIN
-    DELETE FROM clientes WHERE id_cliente = p_id_cliente;
-    COMMIT;
-  END;
-
-  FUNCTION listar_clientes RETURN SYS_REFCURSOR AS
+  FUNCTION listar_ingredientes RETURN SYS_REFCURSOR AS
     v_cur SYS_REFCURSOR;
   BEGIN
-    OPEN v_cur FOR
-      SELECT id_cliente, nombre, primer_apellido, segundo_apellido, telefono, email, direccion
-        FROM clientes;
+    OPEN v_cur FOR SELECT * FROM ingredientes;
     RETURN v_cur;
   END;
-END pkg_clientes;
+END pkg_ingredientes;
 /
 
+CREATE OR REPLACE PACKAGE pkg_gestion_ventas AS
 
+    estado_pagado   CONSTANT VARCHAR2(15) := 'Pagado';
+    estado_pendiente CONSTANT VARCHAR2(15) := 'Pendiente';
+    estado_anulado  CONSTANT VARCHAR2(15) := 'Anulado';
 
+    
+    CURSOR cur_detalle_venta(p_id_venta NUMBER) IS
+        SELECT v.id_ventas,
+               c.nombre || ' ' || c.primer_apellido AS cliente,
+               p.nombre AS producto,
+               v.cantidad_productos_total AS cantidad,
+               v.monto_total AS total
+        FROM ventas v
+        INNER JOIN clientes c ON v.id_cliente = c.id_cliente
+        INNER JOIN productos p ON v.id_producto = p.id_producto
+        WHERE v.id_ventas = p_id_venta;
 
-----Paquete de empleados
+  
+    FUNCTION obtener_total_venta(p_id_venta NUMBER)
+    RETURN NUMBER;
 
-CREATE OR REPLACE PACKAGE pkg_empleados AS
-  PROCEDURE agregar_empleado(
-    p_nombre           IN empleados.nombre%TYPE,
-    p_primer_apellido  IN empleados.primer_apellido%TYPE,
-    p_segundo_apellido IN empleados.segundo_apellido%TYPE,
-    p_salario          IN empleados.salario%TYPE,
-    p_cargo            IN empleados.cargo%TYPE
-  );
-
-  PROCEDURE actualizar_empleado(
-    p_id_empleado      IN empleados.id_empleado%TYPE,
-    p_nombre           IN empleados.nombre%TYPE,
-    p_primer_apellido  IN empleados.primer_apellido%TYPE,
-    p_segundo_apellido IN empleados.segundo_apellido%TYPE,
-    p_salario          IN empleados.salario%TYPE,
-    p_cargo            IN empleados.cargo%TYPE
-  );
-
-  PROCEDURE eliminar_empleado(p_id_empleado IN empleados.id_empleado%TYPE);
-
-  FUNCTION listar_empleados RETURN SYS_REFCURSOR;
-END pkg_empleados;
+    
+    FUNCTION total_cliente_anual(p_id_cliente NUMBER, p_year NUMBER)
+    RETURN NUMBER;
+END pkg_gestion_ventas;
 /
 
+--Cuerpo del paquete
+CREATE OR REPLACE PACKAGE BODY pkg_gestion_ventas AS
 
----Cuerpo del paquete de empleados
-CREATE OR REPLACE PACKAGE BODY pkg_empleados AS
-  PROCEDURE agregar_empleado(
-    p_nombre           IN empleados.nombre%TYPE,
-    p_primer_apellido  IN empleados.primer_apellido%TYPE,
-    p_segundo_apellido IN empleados.segundo_apellido%TYPE,
-    p_salario          IN empleados.salario%TYPE,
-    p_cargo            IN empleados.cargo%TYPE
-  ) AS
-  BEGIN
-    INSERT INTO empleados (nombre, primer_apellido, segundo_apellido, salario, cargo)
-    VALUES (p_nombre, p_primer_apellido, p_segundo_apellido, p_salario, p_cargo);
-    COMMIT;
-  END;
+    FUNCTION obtener_total_venta(p_id_venta NUMBER)
+    RETURN NUMBER AS
+        v_total NUMBER;
+    BEGIN
+        SELECT monto_total
+        INTO v_total
+        FROM ventas
+        WHERE id_ventas = p_id_venta;
 
-  PROCEDURE actualizar_empleado(
-    p_id_empleado      IN empleados.id_empleado%TYPE,
-    p_nombre           IN empleados.nombre%TYPE,
-    p_primer_apellido  IN empleados.primer_apellido%TYPE,
-    p_segundo_apellido IN empleados.segundo_apellido%TYPE,
-    p_salario          IN empleados.salario%TYPE,
-    p_cargo            IN empleados.cargo%TYPE
-  ) AS
-  BEGIN
-    UPDATE empleados
-       SET nombre = p_nombre,
-           primer_apellido = p_primer_apellido,
-           segundo_apellido = p_segundo_apellido,
-           salario = p_salario,
-           cargo = p_cargo
-     WHERE id_empleado = p_id_empleado;
-    COMMIT;
-  END;
+        RETURN v_total;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RETURN NULL;
+    END obtener_total_venta;
 
-  PROCEDURE eliminar_empleado(p_id_empleado IN empleados.id_empleado%TYPE) AS
-  BEGIN
-    DELETE FROM empleados WHERE id_empleado = p_id_empleado;
-    COMMIT;
-  END;
+    FUNCTION total_cliente_anual(p_id_cliente NUMBER, p_year NUMBER)
+    RETURN NUMBER AS
+        v_total_cliente NUMBER;
+    BEGIN
+        SELECT NVL(SUM(monto_total),0)
+        INTO v_total_cliente
+        FROM ventas
+        WHERE id_cliente = p_id_cliente
+          AND EXTRACT(YEAR FROM (SELECT f.fecha
+                                 FROM facturas f
+                                 INNER JOIN ventas v ON f.id_ventas = v.id_ventas
+                                 WHERE v.id_cliente = p_id_cliente
+                                 AND v.id_ventas = ventas.id_ventas)) = p_year;
 
-  FUNCTION listar_empleados RETURN SYS_REFCURSOR AS
-    v_cur SYS_REFCURSOR;
-  BEGIN
-    OPEN v_cur FOR
-      SELECT id_empleado, nombre, primer_apellido, segundo_apellido, salario, cargo
-        FROM empleados;
-    RETURN v_cur;
-  END;
-END pkg_empleados;
+        RETURN v_total_cliente;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RETURN 0;
+    END total_cliente_anual;
+
+END pkg_gestion_ventas;
 /
 
+CREATE OR REPLACE PACKAGE pkg_gestion_facturas AS
+    -- Constantes de estado de factura
+    estado_pagada    CONSTANT VARCHAR2(15) := 'Pagada';
+    estado_pendiente CONSTANT VARCHAR2(15) := 'Pendiente';
+    estado_anulada   CONSTANT VARCHAR2(15) := 'Anulada';
 
+    -- Cursor para ver detalle de una factura específica
+    CURSOR cur_detalle_factura(p_id_factura NUMBER) IS
+        SELECT f.id_factura,
+               f.fecha,
+               c.nombre || ' ' || c.primer_apellido AS cliente,
+               p.nombre AS producto,
+               v.cantidad_productos_total AS cantidad,
+               (f.subtotal + f.impuesto) AS total
+        FROM facturas f
+        INNER JOIN ventas v ON f.id_ventas = v.id_ventas
+        INNER JOIN clientes c ON v.id_cliente = c.id_cliente
+        INNER JOIN productos p ON v.id_producto = p.id_producto
+        WHERE f.id_factura = p_id_factura;
 
----Paquete de ventas
-CREATE OR REPLACE PACKAGE pkg_ventas AS
-  PROCEDURE agregar_venta(
-    p_id_cliente               IN NUMBER,
-    p_monto_total              IN NUMBER,
-    p_cantidad_productos_total IN NUMBER,
-    p_id_empleado              IN NUMBER,
-    p_id_producto              IN NUMBER
-  );
+    -- Obtener el total de una factura (subtotal + impuesto)
+    FUNCTION obtener_total_factura(p_id_factura NUMBER)
+    RETURN NUMBER;
 
-  PROCEDURE editar_venta(
-    p_id_ventas                IN NUMBER,
-    p_id_cliente               IN NUMBER,
-    p_monto_total              IN NUMBER,
-    p_cantidad_productos_total IN NUMBER,
-    p_id_empleado              IN NUMBER,
-    p_id_producto              IN NUMBER
-  );
-
-  PROCEDURE eliminar_venta(p_id_ventas IN NUMBER);
-
-  FUNCTION listar_ventas RETURN SYS_REFCURSOR;
-END pkg_ventas;
+    -- Obtener el total facturado a un cliente en un año específico
+    FUNCTION total_cliente_anual(p_id_cliente NUMBER, p_year NUMBER)
+    RETURN NUMBER;
+END pkg_gestion_facturas;
 /
 
+--cuerpo del paquete
+CREATE OR REPLACE PACKAGE BODY pkg_gestion_facturas AS
 
----Cuerpo del paquete de ventas
-CREATE OR REPLACE PACKAGE BODY pkg_ventas AS
-  PROCEDURE agregar_venta(
-    p_id_cliente               IN NUMBER,
-    p_monto_total              IN NUMBER,
-    p_cantidad_productos_total IN NUMBER,
-    p_id_empleado              IN NUMBER,
-    p_id_producto              IN NUMBER
-  ) AS
-  BEGIN
-    INSERT INTO ventas (id_cliente, monto_total, cantidad_productos_total, id_empleado, id_producto)
-    VALUES (p_id_cliente, p_monto_total, p_cantidad_productos_total, p_id_empleado, p_id_producto);
-    COMMIT;
-  END;
+    FUNCTION obtener_total_factura(p_id_factura NUMBER)
+    RETURN NUMBER AS
+        v_total NUMBER;
+    BEGIN
+        SELECT (subtotal + impuesto)
+        INTO v_total
+        FROM facturas
+        WHERE id_factura = p_id_factura;
 
-  PROCEDURE editar_venta(
-    p_id_ventas                IN NUMBER,
-    p_id_cliente               IN NUMBER,
-    p_monto_total              IN NUMBER,
-    p_cantidad_productos_total IN NUMBER,
-    p_id_empleado              IN NUMBER,
-    p_id_producto              IN NUMBER
-  ) AS
-  BEGIN
-    UPDATE ventas
-       SET id_cliente = p_id_cliente,
-           monto_total = p_monto_total,
-           cantidad_productos_total = p_cantidad_productos_total,
-           id_empleado = p_id_empleado,
-           id_producto = p_id_producto
-     WHERE id_ventas = p_id_ventas;
-    COMMIT;
-  END;
+        RETURN v_total;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RETURN NULL;
+    END obtener_total_factura;
 
-  PROCEDURE eliminar_venta(p_id_ventas IN NUMBER) AS
-  BEGIN
-    DELETE FROM ventas WHERE id_ventas = p_id_ventas;
-    COMMIT;
-  END;
+    FUNCTION total_cliente_anual(p_id_cliente NUMBER, p_year NUMBER)
+    RETURN NUMBER AS
+        v_total_cliente NUMBER;
+    BEGIN
+        SELECT NVL(SUM(f.subtotal + f.impuesto), 0)
+        INTO v_total_cliente
+        FROM facturas f
+        INNER JOIN ventas v ON f.id_ventas = v.id_ventas
+        WHERE v.id_cliente = p_id_cliente
+          AND EXTRACT(YEAR FROM f.fecha) = p_year;
 
-  FUNCTION listar_ventas RETURN SYS_REFCURSOR AS
-    v_cur SYS_REFCURSOR;
-  BEGIN
-    OPEN v_cur FOR
-      SELECT id_ventas, id_cliente, monto_total, cantidad_productos_total, id_empleado, id_producto
-        FROM ventas;
-    RETURN v_cur;
-  END;
-END pkg_ventas;
+        RETURN v_total_cliente;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RETURN 0;
+    END total_cliente_anual;
+
+END pkg_gestion_facturas;
 /
-
-
-
-
----Paquete de Factura
-
-
-CREATE OR REPLACE PACKAGE pkg_factura AS
-  PROCEDURE agregar_factura(
-    p_id_ventas IN FACTURA.ID_VENTAS%TYPE,
-    p_fecha     IN FACTURA.FECHA%TYPE,
-    p_impuesto  IN FACTURA.IMPUESTO%TYPE,
-    p_subtotal  IN FACTURA.SUBTOTAL%TYPE
-  );
-
-  PROCEDURE editar_factura(
-    p_id_factura IN FACTURA.ID_FACTURA%TYPE,
-    p_id_ventas  IN FACTURA.ID_VENTAS%TYPE,
-    p_fecha      IN FACTURA.FECHA%TYPE,
-    p_impuesto   IN FACTURA.IMPUESTO%TYPE,
-    p_subtotal   IN FACTURA.SUBTOTAL%TYPE
-  );
-
-  PROCEDURE eliminar_factura(
-    p_id_factura IN FACTURA.ID_FACTURA%TYPE
-  );
-
-  FUNCTION listar_facturas RETURN SYS_REFCURSOR;
-END pkg_factura;
-/
-
-
----Cuerpo del paquete de factura
-
-   
-CREATE OR REPLACE PACKAGE BODY pkg_factura AS
-
-  PROCEDURE agregar_factura(
-    p_id_ventas IN FACTURA.ID_VENTAS%TYPE,
-    p_fecha     IN FACTURA.FECHA%TYPE,
-    p_impuesto  IN FACTURA.IMPUESTO%TYPE,
-    p_subtotal  IN FACTURA.SUBTOTAL%TYPE
-  ) AS
-  BEGIN
-    INSERT INTO FACTURA (ID_VENTAS, FECHA, IMPUESTO, SUBTOTAL)
-    VALUES (p_id_ventas, p_fecha, p_impuesto, p_subtotal);
-    COMMIT;
-  END agregar_factura;
-
-  PROCEDURE editar_factura(
-    p_id_factura IN FACTURA.ID_FACTURA%TYPE,
-    p_id_ventas  IN FACTURA.ID_VENTAS%TYPE,
-    p_fecha      IN FACTURA.FECHA%TYPE,
-    p_impuesto   IN FACTURA.IMPUESTO%TYPE,
-    p_subtotal   IN FACTURA.SUBTOTAL%TYPE
-  ) AS
-  BEGIN
-    UPDATE FACTURA
-       SET ID_VENTAS = p_id_ventas,
-           FECHA     = p_fecha,
-           IMPUESTO  = p_impuesto,
-           SUBTOTAL  = p_subtotal
-     WHERE ID_FACTURA = p_id_factura;
-    COMMIT;
-  END editar_factura;
-
-  PROCEDURE eliminar_factura(
-    p_id_factura IN FACTURA.ID_FACTURA%TYPE
-  ) AS
-  BEGIN
-    DELETE FROM FACTURA
-     WHERE ID_FACTURA = p_id_factura;
-    COMMIT;
-  END eliminar_factura;
-
-  FUNCTION listar_facturas RETURN SYS_REFCURSOR AS
-    cur_facturas SYS_REFCURSOR;
-  BEGIN
-    OPEN cur_facturas FOR
-      SELECT ID_FACTURA, ID_VENTAS, FECHA, IMPUESTO, SUBTOTAL
-        FROM FACTURA;
-    RETURN cur_facturas;
-  END listar_facturas;
-
-END pkg_factura;
-/
-
-
-
-
-
-
-
-
-
