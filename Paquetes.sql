@@ -65,26 +65,25 @@ END pkg_recetas;
 
 
 CREATE OR REPLACE PACKAGE pkg_ingredientes AS
-  PROCEDURE agregar_ingrediente(p_nombre VARCHAR2, p_cantidad NUMBER, p_id_receta NUMBER);
-  PROCEDURE actualizar_ingrediente(p_id_ingrediente NUMBER, p_nombre VARCHAR2, p_cantidad NUMBER, p_id_receta NUMBER);
+  PROCEDURE agregar_ingrediente(p_nombre VARCHAR2, p_cantidad NUMBER);
+  PROCEDURE actualizar_ingrediente(p_id_ingrediente NUMBER, p_nombre VARCHAR2, p_cantidad NUMBER);
   PROCEDURE eliminar_ingrediente(p_id_ingrediente NUMBER);
   FUNCTION listar_ingredientes RETURN SYS_REFCURSOR;
 END pkg_ingredientes;
 /
 
 CREATE OR REPLACE PACKAGE BODY pkg_ingredientes AS
-  PROCEDURE agregar_ingrediente(p_nombre VARCHAR2, p_cantidad NUMBER, p_id_receta NUMBER) AS
+  PROCEDURE agregar_ingrediente(p_nombre VARCHAR2, p_cantidad NUMBER) AS
   BEGIN
-    INSERT INTO ingredientes (nombre, cantidad, id_receta)
+    INSERT INTO ingredientes (nombre, cantidad)
     VALUES (p_nombre, p_cantidad, p_id_receta);
   END;
 
-  PROCEDURE actualizar_ingrediente(p_id_ingrediente NUMBER, p_nombre VARCHAR2, p_cantidad NUMBER, p_id_receta NUMBER) AS
+  PROCEDURE actualizar_ingrediente(p_id_ingrediente NUMBER, p_nombre VARCHAR2, p_cantidad NUMBER) AS
   BEGIN
     UPDATE ingredientes
     SET nombre = p_nombre,
-        cantidad = p_cantidad,
-        id_receta = p_id_receta
+        cantidad = p_cantidad
     WHERE id_ingrediente = p_id_ingrediente;
   END;
 
