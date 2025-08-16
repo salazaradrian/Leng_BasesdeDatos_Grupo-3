@@ -10,7 +10,7 @@ public class ClienteRepositorio {
 
     
     public boolean agregarCliente(Cliente cliente) {
-        String sql = "{call agregar_cliente(?, ?, ?, ?, ?, ?)}";
+        String sql = "{call pkg_clientes.agregar_cliente(?, ?, ?, ?, ?, ?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -33,7 +33,7 @@ public class ClienteRepositorio {
    
     public List<Cliente> listarClientes() {
         List<Cliente> lista = new ArrayList<>();
-        String sql = "{? = call listar_clientes()}";
+        String sql = "{? = call pkg_clientes.listar_clientes()}";
 
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
@@ -63,7 +63,7 @@ public class ClienteRepositorio {
 
    
     public boolean actualizarCliente(Cliente cliente) {
-        String sql = "{call actualizar_cliente(?, ?, ?, ?, ?, ?, ?)}";
+        String sql = "{call pkg_clientes.actualizar_cliente(?, ?, ?, ?, ?, ?, ?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -86,7 +86,7 @@ public class ClienteRepositorio {
 
    
     public boolean eliminarCliente(int idCliente) {
-        String sql = "{call eliminar_cliente(?)}";
+        String sql = "{call pkg_clientes.eliminar_cliente(?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -100,3 +100,4 @@ public class ClienteRepositorio {
         }
     }
 }
+
