@@ -17,7 +17,7 @@ public class FacturaRepositorio {
     
     public boolean agregarFactura(Factura factura) {
         // Agregar factura con procedimiento.
-        String sql = "{call agregar_factura(?,?,?,?)}";
+        String sql = "{call pkg_factura.agregar_factura(?,?,?,?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -37,7 +37,7 @@ public class FacturaRepositorio {
     
     public boolean editarFactura(Factura factura) {
         // Procedimiento para editar factura.
-        String sql = "{call editar_factura(?,?,?,?,?)}";
+        String sql = "{call pkg_factura.editar_factura(?,?,?,?,?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -58,7 +58,7 @@ public class FacturaRepositorio {
 
     public boolean eliminarFactura(int idFactura) {
         // Procedimiento  para eliminar factura.
-        String sql = "{call eliminar_factura(?)}";
+        String sql = "{call pkg_factura.eliminar_factura(?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -74,7 +74,7 @@ public class FacturaRepositorio {
     public List<Factura> listarFacturas() {
         List<Factura> lista = new ArrayList<>();
         // Funcion listar facturas.
-        String sql = "{? = call listar_facturas()}";
+        String sql = "{? = call pkg_factura.listar_facturas()}";
 
         // try-with-resources para la conexión y el CallableStatement
         try (Connection conn = ConexionOracle.conectar();
@@ -202,3 +202,4 @@ public class FacturaRepositorio {
 //        }
 //    }
 //}
+
