@@ -11,7 +11,7 @@ public class EmpleadoRepositorio {
 
     
     public boolean agregarEmpleado(Empleado empleado) {
-        String sql = "{call agregar_empleado(?, ?, ?, ?, ?)}";
+        String sql = "{call pkg_empleados.agregar_empleado(?, ?, ?, ?, ?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -33,7 +33,7 @@ public class EmpleadoRepositorio {
     
     public List<Empleado> listarEmpleados() {
         List<Empleado> lista = new ArrayList<>();
-        String sql = "{? = call listar_empleados()}";
+        String sql = "{? = call pkg_empleados.listar_empleados()}";
 
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
@@ -62,7 +62,7 @@ public class EmpleadoRepositorio {
 
     
     public boolean actualizarEmpleado(Empleado empleado) {
-        String sql = "{call actualizar_empleado(?, ?, ?, ?, ?, ?)}";
+        String sql = "{call pkg_empleados.actualizar_empleado(?, ?, ?, ?, ?, ?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -84,7 +84,7 @@ public class EmpleadoRepositorio {
 
     
     public boolean eliminarEmpleado(int idEmpleado) {
-        String sql = "{call eliminar_empleado(?)}";
+        String sql = "{call pkg_empleados.eliminar_empleado(?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -98,3 +98,4 @@ public class EmpleadoRepositorio {
         }
     }
 }
+
