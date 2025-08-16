@@ -76,7 +76,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ingredientes AS
   PROCEDURE agregar_ingrediente(p_nombre VARCHAR2, p_cantidad NUMBER) AS
   BEGIN
     INSERT INTO ingredientes (nombre, cantidad)
-    VALUES (p_nombre, p_cantidad, p_id_receta);
+    VALUES (p_nombre, p_cantidad;
   END;
 
   PROCEDURE actualizar_ingrediente(p_id_ingrediente NUMBER, p_nombre VARCHAR2, p_cantidad NUMBER) AS
