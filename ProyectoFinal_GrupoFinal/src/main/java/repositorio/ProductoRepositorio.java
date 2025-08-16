@@ -29,7 +29,7 @@ public class ProductoRepositorio {
 //    }
     
     public boolean agregarProducto(Producto p) {
-    String sql = "{call agregar_producto(?, ?, ?, ?, ?)}";
+    String sql = "{call pkg_productos.agregar_producto(?, ?, ?, ?, ?)}";
     try (Connection conn = ConexionOracle.conectar();
          CallableStatement stmt = conn.prepareCall(sql)) {
         stmt.setString(1, p.getNombre());
@@ -48,7 +48,7 @@ public class ProductoRepositorio {
 
     public List<Producto> listarProductos() {
         List<Producto> lista = new ArrayList<>();
-        String sql = "{? = call listar_productos()}";
+        String sql = "{? = call pkg_productos.listar_productos()}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement stmt = conn.prepareCall(sql)) {
             stmt.registerOutParameter(1, OracleTypes.CURSOR);
@@ -72,7 +72,7 @@ public class ProductoRepositorio {
     }
 
     public boolean actualizarProducto(Producto p) {
-        String sql = "{call actualizar_producto(?, ?, ?, ?, ?, ?)}";
+        String sql = "{call pkg_productos.actualizar_producto(?, ?, ?, ?, ?, ?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement stmt = conn.prepareCall(sql)) {
             stmt.setInt(1, p.getIdProducto());
@@ -90,7 +90,7 @@ public class ProductoRepositorio {
     }
 
     public boolean eliminarProducto(int id) {
-        String sql = "{call eliminar_producto(?)}";
+        String sql = "{call pkg_productos.eliminar_producto(?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement stmt = conn.prepareCall(sql)) {
             stmt.setInt(1, id);
@@ -102,3 +102,4 @@ public class ProductoRepositorio {
         }
     }
 }
+
