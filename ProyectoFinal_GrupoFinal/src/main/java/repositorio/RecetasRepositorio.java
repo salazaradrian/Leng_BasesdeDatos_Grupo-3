@@ -13,7 +13,7 @@ public class RecetasRepositorio {
     // Obtener recetas
     public List<String> obtenerRecetas() {      //metodo que devuelve una lista de strings
         List<String> recetas = new ArrayList<>(); // se crea una lista vacia - aqui se guardaran los resultados
-        String sql = "{? = call pkg_recetas.obtener_recetas()}";  //aqui se define la llamada al P.A . "?" representa el paramtro de salida(el cursor que devuelve el P.A)
+        String sql = "{? = call pkg_recetas.listar_recetas()}";  //aqui se define la llamada al P.A . "?" representa el paramtro de salida(el cursor que devuelve el P.A)
 
         try (Connection conn = ConexionOracle.conectar();       //conexion a la BD
              CallableStatement stmt = conn.prepareCall(sql)) {

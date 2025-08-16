@@ -100,7 +100,7 @@ public class VentasFrame extends JFrame {
             listarBtn.setBounds(500, 140, 120, 30);
             add(listarBtn);
 
-            modeloTabla = new DefaultTableModel(new String[]{"ID Venta", "ID Cliente", "ID Producto", "Cantidad", "Monto Total", "ID Empleado", "Fecha"}, 0);
+            modeloTabla = new DefaultTableModel(new String[]{"ID Venta", "ID Cliente", "ID Producto", "Cantidad", "Monto Total", "ID Empleado"}, 0);
             tablaVentas = new JTable(modeloTabla);
             JScrollPane scrollPane = new JScrollPane(tablaVentas);
             scrollPane.setBounds(20, 270, 840, 260);

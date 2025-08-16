@@ -68,8 +68,25 @@ public class IngredienteFrame extends JFrame {
         eliminarBtn.addActionListener(e -> eliminarIngrediente());
 
         setLocationRelativeTo(null);
+        
+         // Evento para cargar datos al hacer clic en la tabla
+        tablaIngredientes.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                cargarIngredientesDesdeTabla();
+            }
+        });
+                
     }
 
+       private void cargarIngredientesDesdeTabla() {
+        int fila = tablaIngredientes.getSelectedRow();
+        if (fila != -1) {
+            nombreField.setText(tablaIngredientes.getValueAt(fila, 1).toString());
+//            txtNombre.setText(tablaClientes.getValueAt(fila, 1).toString());
+//            txtPrimerApellido.setText(tablaClientes.getValueAt(fila, 2).toString());
+           
+        }
+    }
     private void cargarIngredientes() {
         modeloTabla.setRowCount(0);
         List<Ingrediente> lista = repositorio.listarIngredientes();

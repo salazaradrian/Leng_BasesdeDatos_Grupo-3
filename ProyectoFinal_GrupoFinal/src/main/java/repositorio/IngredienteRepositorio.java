@@ -8,23 +8,7 @@ import java.util.List;
 import modelo.Cliente;
 import oracle.jdbc.OracleTypes;
 
-//public class IngredienteRepositorio {
-//
-//    // Agregar ingrediente 
-//    public boolean agregarIngrediente(Ingrediente ingrediente) {
-//    String sql = "INSERT INTO ingredientes (nombre, cantidad) VALUES (?, ?)";
-//    try (Connection conn = ConexionOracle.conectar();
-//         PreparedStatement stmt = conn.prepareStatement(sql)) {
-//
-//        stmt.setString(1, ingrediente.getNombre());
-//        stmt.setInt(2, ingrediente.getCantidad());
-//
-//        return stmt.executeUpdate() > 0;
-//    } catch (SQLException e) {
-//        e.printStackTrace();
-//        return false;
-//    }
-//}
+
 public class IngredienteRepositorio {
 
     //Agregar ingrediente usando stored procedure
@@ -44,30 +28,7 @@ public class IngredienteRepositorio {
         }
     }
 
-    
-//        // Listar todos los ingredientes
-//    public List<Ingrediente> listarIngredientes() {
-//    List<Ingrediente> lista = new ArrayList<>();
-//    String sql = "SELECT id_ingrediente, nombre, cantidad FROM ingredientes";
-//
-//    try (Connection conn = ConexionOracle.conectar();
-//         Statement stmt = conn.createStatement();
-//         ResultSet rs = stmt.executeQuery(sql)) {
-//
-//        while (rs.next()) {
-//            Ingrediente ing = new Ingrediente();
-//            ing.setIdIngrediente(rs.getInt("id_ingrediente"));
-//            ing.setNombre(rs.getString("nombre"));
-//            ing.setCantidad(rs.getInt("cantidad"));
-//            lista.add(ing);
-//        }
-//    } catch (SQLException e) {
-//        e.printStackTrace();
-//    }
-//
-//    return lista;
-//}
-    
+
     
     // Listar todos los ingredientes
     public List<Ingrediente> listarIngredientes() {
@@ -96,23 +57,7 @@ public class IngredienteRepositorio {
         return lista;
     }
     
-    
-//        // Actualizar ingrediente
-//   public boolean actualizarIngrediente(Ingrediente ingrediente) {
-//    String sql = "UPDATE ingredientes SET nombre = ?, cantidad = ? WHERE id_ingrediente = ?";
-//    try (Connection conn = ConexionOracle.conectar();
-//         PreparedStatement stmt = conn.prepareStatement(sql)) {
-//
-//        stmt.setString(1, ingrediente.getNombre());
-//        stmt.setInt(2, ingrediente.getCantidad());
-//        stmt.setInt(3, ingrediente.getIdIngrediente());
-//
-//        return stmt.executeUpdate() > 0;
-//    } catch (SQLException e) {
-//        e.printStackTrace();
-//        return false;
-//    }
-//}
+   
 
     // Actualizar ingrediente
     public boolean actualizarIngrediente(Ingrediente ingrediente) {
@@ -133,21 +78,7 @@ public class IngredienteRepositorio {
         }
     }
 
-//    // Eliminar ingrediente
-//    public boolean eliminarIngrediente(int idIngrediente) {
-//        String sql = "DELETE FROM ingredientes WHERE id_ingrediente = ?";
-//
-//        try (Connection conn = ConexionOracle.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
-//
-//            ps.setInt(1, idIngrediente);
-//            return ps.executeUpdate() > 0;
-//
-//        } catch (SQLException e) {
-//            System.out.println("Error al eliminar ingrediente: " + e.getMessage());
-//            return false;
-//        }
-//    }
-    
+
       // Eliminar ingrediente usando procedimiento almacenado
     public boolean eliminarIngrediente(int idIngrediente) {
         String sql = "{call pkg_ingredientes.eliminar_ingrediente(?)}";

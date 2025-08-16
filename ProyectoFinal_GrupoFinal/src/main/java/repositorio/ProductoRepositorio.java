@@ -11,22 +11,40 @@ import java.util.List;
 
 public class ProductoRepositorio {
 
+//    public boolean agregarProducto(Producto p) {
+//        String sql = "{call agregar_producto(?, ?, ?, ?, ?)}";
+//        try (Connection conn = ConexionOracle.conectar();
+//             CallableStatement stmt = conn.prepareCall(sql)) {
+//            stmt.setString(1, p.getNombre());
+//            stmt.setString(2, p.getTipo());
+//            stmt.setDouble(3, p.getPrecio());
+//            stmt.setString(4, p.getDescripcion());
+//            stmt.setInt(5, p.getIdReceta());
+//            stmt.execute();
+//            return true;
+//        } catch (SQLException e) {
+//            System.out.println("Error al agregar producto: " + e.getMessage());
+//            return false;
+//        }
+//    }
+    
     public boolean agregarProducto(Producto p) {
-        String sql = "{call agregar_producto(?, ?, ?, ?, ?)}";
-        try (Connection conn = ConexionOracle.conectar();
-             CallableStatement stmt = conn.prepareCall(sql)) {
-            stmt.setString(1, p.getNombre());
-            stmt.setString(2, p.getTipo());
-            stmt.setDouble(3, p.getPrecio());
-            stmt.setString(4, p.getDescripcion());
-            stmt.setInt(5, p.getIdReceta());
-            stmt.execute();
-            return true;
-        } catch (SQLException e) {
-            System.out.println("Error al agregar producto: " + e.getMessage());
-            return false;
-        }
+    String sql = "{call agregar_producto(?, ?, ?, ?, ?)}";
+    try (Connection conn = ConexionOracle.conectar();
+         CallableStatement stmt = conn.prepareCall(sql)) {
+        stmt.setString(1, p.getNombre());
+        stmt.setString(2, p.getTipo());
+        stmt.setDouble(3, p.getPrecio());
+        stmt.setString(4, p.getDescripcion());
+        stmt.setObject(5, p.getIdReceta(), java.sql.Types.INTEGER); // Manejo de null
+        stmt.execute();
+        return true;
+    } catch (SQLException e) {
+        System.out.println("Error al agregar producto: " + e.getMessage());
+        return false;
     }
+}
+
 
     public List<Producto> listarProductos() {
         List<Producto> lista = new ArrayList<>();
