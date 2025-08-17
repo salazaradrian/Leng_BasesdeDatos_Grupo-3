@@ -20,8 +20,8 @@ import java.util.Date;
 public class VentasRepositorio {
 
     // Agregar venta con procedimiento
-    public boolean pkg_ventas.agregarVenta(Venta venta) {
-        String sql = "{call agregar_venta(?,?,?,?,?)}";
+    public boolean agregarVenta(Venta venta) {
+        String sql = "{call pkg_ventas.agregar_venta(?,?,?,?,?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -41,8 +41,8 @@ public class VentasRepositorio {
     }
 
     // Editar venta con procedimiento
-    public boolean pkg_ventas.editarVenta(Venta venta) {
-        String sql = "{call editar_venta(?,?,?,?,?,?)}";
+    public boolean editarVenta(Venta venta) {
+        String sql = "{call pkg_ventas.editar_venta(?,?,?,?,?,?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
@@ -63,8 +63,8 @@ public class VentasRepositorio {
     }
 
     // Eliminar venta con funcion
-    public boolean pkg_ventas.eliminarVenta(int idVentas) {
-        String sql = "{call eliminar_venta(?)}";
+    public boolean eliminarVenta(int idVentas) {
+        String sql = "{call pkg_ventas.eliminar_venta(?)}";
         try (Connection conn = ConexionOracle.conectar();
              CallableStatement cs = conn.prepareCall(sql)) {
 
