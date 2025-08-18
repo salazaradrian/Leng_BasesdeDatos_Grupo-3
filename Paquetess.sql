@@ -252,6 +252,65 @@ END pkg_ventas;
 
 -- PAQUETE FACTURA
 CREATE OR REPLACE PACKAGE pkg_factura AS
+    PROCEDURE agregar_factura(p_id_ventas NUMBER, p_fecha DATE, p_impuesto NUMBER, p_subtotal NUMBER);
+    PROCEDURE editar_factura(p_id_factura NUMBER, p_id_ventas NUMBER, p_fecha DATE, p_impuesto NUMBER, p_subtotal NUMBER);
+    PROCEDURE eliminar_factura(p_id_factura NUMBER);
+    FUNCTION listar_facturas RETURN SYS_REFCURSOR;
+    
+END pkg_factura;
+/
+
+
+CREATE OR REPLACE PACKAGE BODY pkg_factura AS
+    
+    PROCEDURE agregar_factura(p_id_ventas NUMBER, p_fecha DATE, p_impuesto NUMBER, p_subtotal NUMBER) AS
+    BEGIN
+        INSERT INTO factura (id_ventas, fecha, impuesto, subtotal)
+        VALUES (p_id_ventas, p_fecha, p_impuesto, p_subtotal);
+        
+        COMMIT;
+
+    END agregar_factura;
+    
+
+    PROCEDURE editar_factura(
+        p_id_factura IN NUMBER,
+        p_id_ventas  IN NUMBER,
+        p_fecha      IN DATE,
+        p_impuesto   IN NUMBER,
+        p_subtotal   IN NUMBER
+    ) AS
+    BEGIN
+        UPDATE factura
+        SET
+            id_ventas = p_id_ventas,
+            fecha = p_fecha,
+            impuesto = p_impuesto,
+            subtotal = p_subtotal
+        WHERE id_factura = p_id_factura;
+        
+        COMMIT;
+    END editar_factura;
+    
+
+    PROCEDURE eliminar_factura(p_id_factura NUMBER) AS
+    BEGIN
+        DELETE FROM factura WHERE id_factura = p_id_factura;
+        
+        COMMIT;
+    END eliminar_factura;
+    
+
+    FUNCTION listar_facturas RETURN SYS_REFCURSOR AS
+        v_cur SYS_REFCURSOR;
+    BEGIN
+        OPEN v_cur FOR SELECT * FROM factura ORDER BY ID_FACTURA ASC;
+        RETURN v_cur;
+    END listar_facturas;
+    
+END pkg_factura;
+/
+/*CREATE OR REPLACE PACKAGE pkg_factura AS
   PROCEDURE agregar_factura(p_id_venta NUMBER);
   PROCEDURE editar_factura(p_id_factura NUMBER, p_id_ventas NUMBER, p_fecha DATE, p_impuesto NUMBER, p_subtotal NUMBER);
   PROCEDURE eliminar_factura(p_id_factura NUMBER);
@@ -300,4 +359,6 @@ CREATE OR REPLACE PACKAGE BODY pkg_factura AS
     RETURN v_cur;
   END;
 END pkg_factura;
+
 /
+*/
